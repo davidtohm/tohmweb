@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tohm Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Source+Serif+4:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--azul:#141E28;--ciano:#388FCE;--bege:#CCC3B8;--bege2:#E6E1DB;--laranja:#F28F49;--ok:#4CAF82;--warn:#D4960A;--danger:#D05050}
+[data-theme="light"]{
+  --bg:#F7F5F1;--surf:#FFFFFF;--surf2:#FAF8F5;--surf3:#F0EDE8;
+  --brd:rgba(20,30,40,.06);--brd2:rgba(20,30,40,.1);
+  --t1:#141E28;--t2:#5A6577;--t3:#9AA3B0;
+  --card-shadow:0 2px 8px rgba(20,30,40,.04);--card-shadow-hover:0 16px 48px rgba(20,30,40,.1);
+  --logo-filter:none;
+}
+[data-theme="dark"]{
+  --bg:#0B0D12;--surf:#151820;--surf2:#1A1E28;--surf3:#1F2430;
+  --brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.08);
+  --t1:#E0DCD6;--t2:#6E7787;--t3:#3D4555;
+  --card-shadow:0 2px 8px rgba(0,0,0,.2);--card-shadow-hover:0 16px 48px rgba(0,0,0,.35);
+  --logo-filter:brightness(0) invert(1);
+}
+html{font-size:14px}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
+.mono{font-family:'IBM Plex Mono',monospace}
+.serif{font-family:'Source Serif 4',serif}
+
+/* === LOGIN === */
+.login{position:fixed;inset:0;z-index:999;background:var(--bege2);display:flex;align-items:center;justify-content:center;transition:all .6s cubic-bezier(.4,0,.2,1)}
+[data-theme="dark"] .login{background:var(--azul)}
+.login.off{opacity:0;transform:scale(1.03);pointer-events:none}
+.lbox{width:380px;background:var(--surf);border-radius:20px;padding:48px 40px;box-shadow:0 24px 80px rgba(20,30,40,.12);text-align:center}
+[data-theme="dark"] .lbox{box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.lbox img{height:40px;margin-bottom:6px;filter:var(--logo-filter)}
+.lbox .ls{font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--t3);margin-bottom:36px;font-weight:500}
+.lbox input{width:100%;padding:12px 16px;border:1px solid var(--brd2);border-radius:10px;background:var(--surf2);color:var(--t1);font-family:inherit;font-size:.9rem;outline:0;margin-bottom:14px;transition:border .2s}
+.lbox input:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(56,143,206,.08)}
+.lbox input::placeholder{color:var(--t3)}
+.lbox button{width:100%;padding:13px;background:var(--azul);color:#fff;border:0;border-radius:10px;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px}
+[data-theme="dark"] .lbox button{background:var(--ciano)}
+.lbox button:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.lth{position:absolute;top:24px;right:24px;width:36px;height:36px;border-radius:10px;border:1px solid var(--brd2);background:var(--surf);color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:all .15s}
+.lth:hover{background:var(--surf2)}
+
+/* === PORTAL === */
+.portal{max-width:1100px;margin:0 auto;padding:40px 32px 60px}
+
+/* Header */
+.p-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px}
+.p-brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.p-brand img{height:24px;filter:var(--logo-filter)}
+.p-brand span{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.p-greeting{font-family:'Source Serif 4',serif;font-size:2rem;font-weight:600;margin-bottom:6px}
+.p-greeting span{color:var(--laranja)}
+.p-meta{font-size:.82rem;color:var(--t3);display:flex;align-items:center;gap:8px}
+.live{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;animation:bk 2s infinite}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+
+.p-header-right{display:flex;align-items:center;gap:12px}
+.p-time{font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--t3)}
+.p-avatar{width:40px;height:40px;border-radius:12px;background:rgba(242,143,73,.12);display:flex;align-items:center;justify-content:center;color:var(--laranja);font-weight:700;font-size:.82rem}
+.p-theme{width:36px;height:36px;border-radius:10px;border:1px solid var(--brd2);background:var(--surf);color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;transition:all .15s}
+.p-theme:hover{background:var(--surf2)}
+
+/* Summary strip */
+.p-summary{display:flex;gap:12px;margin-bottom:40px}
+.p-stat{flex:1;background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:12px;box-shadow:var(--card-shadow)}
+.p-stat-val{font-size:1.4rem;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.p-stat-info{}
+.p-stat-label{font-size:.58rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
+.p-stat-chg{font-size:.65rem;font-weight:500}
+.p-stat-chg.u{color:var(--ok)}.p-stat-chg.d{color:var(--danger)}
+
+/* Section label */
+.p-section{font-size:.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:16px;padding-left:4px}
+
+/* Module cards grid */
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px}
+
+.m-card{background:var(--surf);border:1px solid var(--brd);border-radius:16px;padding:28px;box-shadow:var(--card-shadow);cursor:pointer;transition:all .25s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;text-decoration:none;color:inherit;display:block}
+.m-card:hover{transform:translateY(-4px);box-shadow:var(--card-shadow-hover);border-color:var(--brd2)}
+.m-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;opacity:0;transition:opacity .2s}
+.m-card:hover::before{opacity:1}
+
+.m-card-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px}
+.m-card h3{font-size:1.05rem;font-weight:700;margin-bottom:4px}
+.m-card p{font-size:.78rem;color:var(--t3);line-height:1.4;margin-bottom:14px}
+.m-card-footer{display:flex;align-items:center;justify-content:space-between}
+.m-card-stat{font-family:'IBM Plex Mono',monospace;font-size:.8rem;font-weight:600}
+.m-card-arrow{width:28px;height:28px;border-radius:8px;background:var(--surf3);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--t3);transition:all .15s}
+.m-card:hover .m-card-arrow{background:var(--azul);color:#fff}
+[data-theme="dark"] .m-card:hover .m-card-arrow{background:var(--ciano)}
+
+/* Card color variants */
+.m-card.feed::before{background:var(--ciano)}.m-card.feed .m-card-icon{background:rgba(56,143,206,.08)}
+.m-card.alertas::before{background:var(--danger)}.m-card.alertas .m-card-icon{background:rgba(208,80,80,.08)}
+.m-card.producao::before{background:var(--ok)}.m-card.producao .m-card-icon{background:rgba(76,175,130,.08)}
+.m-card.cadastros::before{background:var(--laranja)}.m-card.cadastros .m-card-icon{background:rgba(242,143,73,.08)}
+.m-card.financeiro::before{background:var(--bege)}.m-card.financeiro .m-card-icon{background:rgba(204,195,184,.15)}
+.m-card.health::before{background:var(--ciano)}.m-card.health .m-card-icon{background:rgba(56,143,206,.08)}
+
+/* Soundwave decoration */
+.wave-deco{position:fixed;bottom:0;left:0;right:0;height:120px;pointer-events:none;opacity:.04;overflow:hidden}
+.wave-deco svg{width:100%;height:100%}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .5s cubic-bezier(.16,1,.3,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}.d6{animation-delay:.3s}.d7{animation-delay:.35s}.d8{animation-delay:.4s}
+</style>
+</head>
+<body data-theme="light">
+
+<!-- LOGIN -->
+<div class="login" id="LO">
+  <button class="lth" onclick="th()" id="tb1">☀️</button>
+  <div class="lbox">
+    <img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="TOHM">
+    <div class="ls">Analytics</div>
+    <input type="email" placeholder="E-mail" value="david@tohm.com.br">
+    <input type="password" placeholder="Senha" value="••••••••">
+    <button onclick="login()">Entrar</button>
+  </div>
+</div>
+
+<!-- PORTAL -->
+<div class="portal" id="portal" style="display:none">
+  <div class="p-header anim">
+    <div>
+      <div class="p-brand">
+        <img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="TOHM">
+        <span>Analytics</span>
+      </div>
+      <div class="p-greeting serif">Bom dia, <span>David</span></div>
+      <div class="p-meta"><span class="live"></span>Sistema online · Atualizado há 12 min · 15 Mar 2026</div>
+    </div>
+    <div class="p-header-right">
+      <span class="p-time" id="clock"></span>
+      <button class="p-theme" onclick="th()" id="tb2">☀️</button>
+      <div class="p-avatar">DH</div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="p-summary anim d1">
+    <div class="p-stat"><div class="p-stat-val" style="color:var(--ciano)">R$2.4M</div><div class="p-stat-info"><div class="p-stat-label">Faturamento Mar</div><div class="p-stat-chg u">▲ 12% vs Fev</div></div></div>
+    <div class="p-stat"><div class="p-stat-val" style="color:var(--laranja)">38</div><div class="p-stat-info"><div class="p-stat-label">POs em Aberto</div><div class="p-stat-chg">+5 esta semana</div></div></div>
+    <div class="p-stat"><div class="p-stat-val" style="color:var(--ok)">94%</div><div class="p-stat-info"><div class="p-stat-label">Taxa Entrega</div><div class="p-stat-chg u">▲ 3%</div></div></div>
+    <div class="p-stat"><div class="p-stat-val" style="color:var(--danger)">4</div><div class="p-stat-info"><div class="p-stat-label">Alertas Ativos</div><div class="p-stat-chg d">2 críticos</div></div></div>
+    <div class="p-stat"><div class="p-stat-val" style="color:var(--ok)">88%</div><div class="p-stat-info"><div class="p-stat-label">OEE</div><div class="p-stat-chg u">Meta 85%</div></div></div>
+  </div>
+
+  <!-- Modules -->
+  <div class="p-section anim d2">Módulos</div>
+  <div class="p-grid">
+    <a class="m-card feed anim d3" href="feed.html">
+      <div class="m-card-icon">📥</div>
+      <h3>Feed Operacional</h3>
+      <p>Timeline de eventos, alertas, mudanças de status e atualizações do sistema em tempo real.</p>
+      <div class="m-card-footer">
+        <span class="m-card-stat" style="color:var(--ciano)">12 eventos hoje</span>
+        <div class="m-card-arrow">→</div>
+      </div>
+    </a>
+    <a class="m-card alertas anim d4" href="alertas.html">
+      <div class="m-card-icon">🔔</div>
+      <h3>Alertas</h3>
+      <p>Anomalias detectadas automaticamente. Faturamento sem embarque, divergências, estoque.</p>
+      <div class="m-card-footer">
+        <span class="m-card-stat" style="color:var(--danger)">4 ativos · 2 críticos</span>
+        <div class="m-card-arrow">→</div>
+      </div>
+    </a>
+    <a class="m-card producao anim d5" href="producao.html">
+      <div class="m-card-icon">⚙️</div>
+      <h3>Produção</h3>
+      <p>OEE, disponibilidade, qualidade. Linhas de produção ao vivo, OPs em andamento.</p>
+      <div class="m-card-footer">
+        <span class="m-card-stat" style="color:var(--ok)">3 linhas ativas</span>
+        <div class="m-card-arrow">→</div>
+      </div>
+    </a>
+    <a class="m-card cadastros anim d6" href="cadastros.html">
+      <div class="m-card-icon">📋</div>
+      <h3>Cadastros</h3>
+      <p>Clientes, produtos, divisões e estruturas. Base centralizada com vínculo ao Protheus.</p>
+      <div class="m-card-footer">
+        <span class="m-card-stat" style="color:var(--laranja)">1.003 registros</span>
+        <div class="m-card-arrow">→</div>
+      </div>
+    </a>
+    <a class="m-card financeiro anim d7" href="financeiro.html">
+      <div class="m-card-icon">💰</div>
+      <h3>Financeiro</h3>
+      <p>Breakdown, credit memo, preços, pagamentos. Tudo consolidado no banco de dados.</p>
+      <div class="m-card-footer">
+        <span class="m-card-stat" style="color:var(--t2)">R$ 2.4M faturado</span>
+        <div class="m-card-arrow">→</div>
+      </div>
+    </a>
+    <a class="m-card health anim d8" href="health.html">
+      <div class="m-card-icon">❤️</div>
+      <h3>Health</h3>
+      <p>Status dos jobs, conexões, sync, configs e contadores. O sistema está saudável?</p>
+      <div class="m-card-footer">
+        <span class="m-card-stat" style="color:var(--ok)">● Tudo online</span>
+        <div class="m-card-arrow">→</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- Soundwave decoration -->
+<div class="wave-deco">
+  <svg viewBox="0 0 1400 120" preserveAspectRatio="none">
+    <path d="M0 60 Q350 20 700 60 Q1050 100 1400 50" stroke="var(--t1)" stroke-width="1.5" fill="none"/>
+    <path d="M0 75 Q350 35 700 75 Q1050 115 1400 65" stroke="var(--laranja)" stroke-width="1" fill="none" opacity=".5"/>
+    <path d="M0 45 Q400 10 800 50 Q1100 80 1400 35" stroke="var(--ciano)" stroke-width=".8" fill="none" opacity=".4"/>
+  </svg>
+</div>
+
+<script>
+function login(){
+  document.getElementById('LO').classList.add('off');
+  setTimeout(()=>{document.getElementById('portal').style.display='block'},400);
+}
+function th(){
+  const b=document.body,n=b.dataset.theme==='light'?'dark':'light';
+  b.dataset.theme=n;
+  const i=n==='dark'?'🌙':'☀️';
+  document.getElementById('tb1').textContent=i;
+  document.getElementById('tb2').textContent=i;
+  localStorage.setItem('tohm-theme',n);
+}
+// Clock
+function updateClock(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+setInterval(updateClock,1000);updateClock();
+// Restore theme
+const saved=localStorage.getItem('tohm-theme');
+if(saved){document.body.dataset.theme=saved;const i=saved==='dark'?'🌙':'☀️';document.getElementById('tb1').textContent=i;document.getElementById('tb2').textContent=i}
+// Enter to login
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('LO').classList.contains('off'))login()});
+</script>
+</body>
+</html>

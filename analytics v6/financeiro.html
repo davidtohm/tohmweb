@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Financeiro — Tohm Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--azul:#141E28;--ciano:#388FCE;--laranja:#F28F49;--ok:#4CAF82;--warn:#D4960A;--danger:#D05050}
+[data-theme="light"]{--bg:#F7F5F1;--surf:#FFF;--surf2:#FAF8F5;--surf3:#F0EDE8;--brd:rgba(20,30,40,.06);--brd2:rgba(20,30,40,.1);--t1:#141E28;--t2:#5A6577;--t3:#9AA3B0;--sh:0 1px 3px rgba(20,30,40,.04);--logo-filter:none}
+[data-theme="dark"]{--bg:#0B0D12;--surf:#151820;--surf2:#1A1E28;--surf3:#1F2430;--brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.08);--t1:#E0DCD6;--t2:#6E7787;--t3:#3D4555;--sh:0 1px 3px rgba(0,0,0,.3);--logo-filter:brightness(0) invert(1)}
+html{font-size:14px}body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.mono{font-family:'IBM Plex Mono',monospace}
+.topbar{height:48px;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.tb-back{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;border:1px solid var(--brd2);background:var(--surf);color:var(--t2);font-family:inherit;font-size:.75rem;font-weight:500;cursor:pointer;text-decoration:none}.tb-back:hover{background:var(--surf2);color:var(--t1)}
+.tb-sep{width:1px;height:22px;background:var(--brd2)}.tb-logo{display:flex;align-items:center;gap:8px}.tb-logo img{height:14px;filter:var(--logo-filter)}.tb-logo span{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.tb-title{font-size:.9rem;font-weight:600;margin-left:4px}.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--brd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem}.tb-btn:hover{background:var(--surf2);color:var(--t1)}
+.tb-time{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--t3)}
+.ph{padding:14px 24px;border-bottom:1px solid var(--brd);background:var(--surf);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}.ph h2{font-size:1.05rem;font-weight:700}.ph-s{font-size:.75rem;color:var(--t3);margin-left:12px}
+.ph-r{display:flex;align-items:center;gap:8px}.fin{padding:7px 12px;border:1px solid var(--brd2);border-radius:6px;background:var(--surf2);color:var(--t1);font-family:inherit;font-size:.78rem;outline:0;cursor:pointer}
+.main{flex:1;overflow-y:auto}
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px 24px}
+.kc{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:20px;box-shadow:var(--sh)}
+.kc-l{font-size:.58rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.kc-v{font-size:1.4rem;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.kc-c{font-size:.65rem;font-weight:500;margin-top:2px}.kc-c.u{color:var(--ok)}.kc-c.d{color:var(--danger)}
+.sec{padding:0 24px 20px}.sec h3{font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--brd);border-radius:10px;overflow:hidden;box-shadow:var(--sh)}
+th{padding:10px 16px;text-align:left;font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);background:var(--surf2);border-bottom:1px solid var(--brd)}
+td{padding:10px 16px;font-size:.82rem;border-bottom:1px solid var(--brd);color:var(--t2)}tr:hover td{background:var(--surf2)}
+.bdg{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.6rem;font-weight:700;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.b-ok{background:rgba(76,175,130,.1);color:var(--ok)}.b-w{background:rgba(212,150,10,.1);color:var(--warn)}.b-d{background:rgba(208,80,80,.1);color:var(--danger)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
+</style></head><body data-theme="light">
+<div class="topbar"><a class="tb-back" href="index.html">← Portal</a><div class="tb-sep"></div><div class="tb-logo"><img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T"><span>Analytics</span></div><span class="tb-title">Financeiro</span><div class="tb-right"><span class="tb-time" id="clock"></span><button class="tb-btn" onclick="th()" id="tb">☀️</button></div></div>
+<div class="ph"><div style="display:flex;align-items:center"><h2>Financeiro</h2><span class="ph-s">Breakdown, pagamentos, recebíveis</span></div><div class="ph-r"><select class="fin"><option>Mar 2026</option><option>Fev 2026</option><option>Jan 2026</option></select></div></div>
+<div class="main">
+  <div class="kg">
+    <div class="kc"><div class="kc-l">Faturado (Mar)</div><div class="kc-v" style="color:var(--ciano)">R$ 2.4M</div><div class="kc-c u">▲ 12% vs Fev</div></div>
+    <div class="kc"><div class="kc-l">Recebido (Mar)</div><div class="kc-v" style="color:var(--ok)">R$ 1.8M</div><div class="kc-c u">▲ 8%</div></div>
+    <div class="kc"><div class="kc-l">Em Aberto</div><div class="kc-v" style="color:var(--warn)">R$ 620k</div><div class="kc-c d">3 POs pendentes</div></div>
+    <div class="kc"><div class="kc-l">Vencido (+30d)</div><div class="kc-v" style="color:var(--danger)">R$ 275k</div><div class="kc-c d">2 POs</div></div>
+  </div>
+  <div class="sec"><h3>Últimos Pagamentos</h3>
+    <table><thead><tr><th>PO</th><th>Cliente</th><th>Valor</th><th>Data</th><th>Método</th><th>Status</th></tr></thead><tbody>
+      <tr><td class="mono" style="font-weight:600;color:var(--t1)">PO-2024-0387</td><td>Sonos Inc</td><td class="mono" style="font-weight:600">US$ 90,000</td><td>14/03/2026</td><td>Wire Transfer</td><td><span class="bdg b-ok">Confirmado</span></td></tr>
+      <tr><td class="mono" style="font-weight:600;color:var(--t1)">PO-2024-0352</td><td>Harman International</td><td class="mono" style="font-weight:600">US$ 156,000</td><td>13/03/2026</td><td>Wire Transfer</td><td><span class="bdg b-ok">Confirmado</span></td></tr>
+      <tr><td class="mono" style="font-weight:600;color:var(--t1)">PO-2024-0340</td><td>Samsung Electronics</td><td class="mono" style="font-weight:600">US$ 220,000</td><td>10/03/2026</td><td>LC</td><td><span class="bdg b-ok">Confirmado</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="sec"><h3>Recebíveis em Aberto</h3>
+    <table><thead><tr><th>PO</th><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Dias</th><th>Status</th></tr></thead><tbody>
+      <tr><td class="mono" style="font-weight:600;color:var(--t1)">PO-2024-0391</td><td>Harman International</td><td class="mono" style="font-weight:600">US$ 84,000</td><td>25/03/2026</td><td>10</td><td><span class="bdg b-w">Pendente</span></td></tr>
+      <tr><td class="mono" style="font-weight:600;color:var(--warn)">PO-2024-0371</td><td>JBL Professional</td><td class="mono" style="font-weight:600">US$ 180,000</td><td>11/02/2026</td><td style="color:var(--warn);font-weight:700">32</td><td><span class="bdg b-w">Atrasado</span></td></tr>
+      <tr><td class="mono" style="font-weight:600;color:var(--danger)">PO-2024-0358</td><td>Bose Corporation</td><td class="mono" style="font-weight:600">US$ 95,000</td><td>29/01/2026</td><td style="color:var(--danger);font-weight:700">45</td><td><span class="bdg b-d">Vencido</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+<script>
+function th(){const b=document.body,n=b.dataset.theme==='light'?'dark':'light';b.dataset.theme=n;document.getElementById('tb').textContent=n==='dark'?'🌙':'☀️';localStorage.setItem('tohm-theme',n)}
+const s=localStorage.getItem('tohm-theme');if(s){document.body.dataset.theme=s;document.getElementById('tb').textContent=s==='dark'?'🌙':'☀️'}
+function uc(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}setInterval(uc,1000);uc();
+</script></body></html>
