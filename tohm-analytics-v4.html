@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tohm Analytics — Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --azul:#141E28;--ciano:#388FCE;--bege:#CCC3B8;--bege2:#E6E1DB;
+  --laranja:#F28F49;--branco:#FFF;--ok:#4CAF82;--warn:#E5A100;--danger:#E05555;
+}
+[data-theme="dark"]{
+  --bg:#08090C;--surf:#0F1115;--surf2:#151820;--surf3:#1B1F2A;
+  --brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.08);
+  --t1:#E0DCD6;--t2:#6E7787;--t3:#3D4555;
+  --sh:0 1px 4px rgba(0,0,0,.4);
+  --glow-c:rgba(56,143,206,.08);--glow-o:rgba(242,143,73,.06);
+}
+[data-theme="light"]{
+  --bg:#ECEAE5;--surf:#FFFFFF;--surf2:#F6F4F0;--surf3:#EDEBE6;
+  --brd:rgba(20,30,40,.06);--brd2:rgba(20,30,40,.1);
+  --t1:#141E28;--t2:#5C6778;--t3:#9AA3B0;
+  --sh:0 1px 4px rgba(20,30,40,.06);
+  --glow-c:rgba(56,143,206,.05);--glow-o:rgba(242,143,73,.04);
+}
+html{font-size:13px}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* === LOGIN === */
+.login{position:fixed;inset:0;z-index:999;background:var(--azul);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:32px;transition:all .5s}
+.login.off{opacity:0;pointer-events:none}
+.login img{height:44px;filter:brightness(0) invert(1)}
+.login-row{display:flex;gap:12px;align-items:center}
+.login input{padding:11px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#fff;font-family:'Outfit',sans-serif;font-size:.9rem;outline:0;border-radius:6px;width:220px;transition:border .2s}
+.login input:focus{border-color:var(--ciano)}
+.login input::placeholder{color:rgba(255,255,255,.2)}
+.login button{padding:11px 28px;background:var(--laranja);color:#fff;border:0;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.login button:hover{background:#E07D3A}
+.login-sub{font-size:.7rem;color:rgba(255,255,255,.15);letter-spacing:3px;text-transform:uppercase}
+
+/* === TOP BAR === */
+.topbar{height:40px;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 16px;gap:16px;flex-shrink:0}
+.topbar-logo{display:flex;align-items:center;gap:8px}
+.topbar-logo img{height:14px;filter:var(--logo-filter, brightness(1))}
+[data-theme="dark"] .topbar-logo img{filter:brightness(0) invert(1)}
+[data-theme="light"] .topbar-logo img{filter:brightness(0)}
+.topbar-logo span{font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.topbar-sep{width:1px;height:20px;background:var(--brd2)}
+.topbar-status{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--t2)}
+.topbar-status .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:p 2s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+.topbar-tabs{display:flex;gap:2px;margin-left:20px}
+.topbar-tab{padding:5px 14px;font-size:.72rem;font-weight:500;color:var(--t3);cursor:pointer;border-radius:4px;transition:all .1s}
+.topbar-tab:hover{color:var(--t1);background:var(--surf2)}
+.topbar-tab.on{color:var(--t1);background:var(--surf2);font-weight:600}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.topbar-btn{width:26px;height:26px;border-radius:5px;border:1px solid var(--brd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.75rem;transition:all .1s}
+.topbar-btn:hover{background:var(--surf2);color:var(--t1)}
+.topbar-time{font-size:.7rem;color:var(--t3);font-family:'IBM Plex Mono',monospace}
+
+/* === GRID LAYOUT (the cockpit) === */
+.cockpit{flex:1;display:grid;grid-template-columns:280px 1fr 300px;grid-template-rows:1fr 1fr;gap:1px;background:var(--brd);overflow:hidden}
+.panel{background:var(--surf);padding:14px;overflow-y:auto;position:relative}
+.panel-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:sticky;top:-14px;background:var(--surf);padding:14px 0 8px;z-index:2;margin-top:-14px}
+.panel-h h3{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3)}
+.panel-h .cnt{font-size:.65rem;font-weight:600;color:var(--laranja)}
+
+/* Panel: Alerts (left column, spans 2 rows) */
+.p-alerts{grid-row:1/3;border-right:1px solid var(--brd)}
+
+.alert{padding:10px 12px;border-radius:8px;margin-bottom:6px;cursor:pointer;transition:all .12s;border:1px solid transparent;position:relative}
+.alert:hover{background:var(--surf2);border-color:var(--brd2)}
+.alert-sev{position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:2px}
+.alert-sev.c{background:var(--danger)}.alert-sev.w{background:var(--warn)}.alert-sev.i{background:var(--ciano)}
+.alert{padding-left:16px}
+.alert-t{font-size:.78rem;font-weight:600;margin-bottom:2px;line-height:1.3}
+.alert-d{font-size:.68rem;color:var(--t3);line-height:1.3}
+.alert-meta{display:flex;gap:8px;margin-top:4px}
+.alert-meta span{font-size:.6rem;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--surf3)}
+.alert-meta .po{color:var(--ciano)}.alert-meta .tm{color:var(--t3)}
+
+/* Panel: Orders tracker (center top) */
+.order-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--brd)}
+.order-row:last-child{border:0}
+.order-po{font-size:.78rem;font-weight:700;min-width:110px;font-family:'IBM Plex Mono',monospace}
+.order-client{font-size:.76rem;color:var(--t2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-product{font-size:.72rem;color:var(--t3);min-width:100px}
+.order-status{min-width:90px;text-align:center}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.6rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.b-ok{background:rgba(76,175,130,.1);color:var(--ok)}
+.b-w{background:rgba(229,161,0,.1);color:var(--warn)}
+.b-d{background:rgba(224,85,85,.1);color:var(--danger)}
+.b-i{background:rgba(56,143,206,.1);color:var(--ciano)}
+.order-val{font-size:.74rem;font-weight:600;min-width:80px;text-align:right;font-family:'IBM Plex Mono',monospace}
+
+/* Pipeline visual */
+.pipeline{display:flex;gap:3px;margin-bottom:14px;padding:8px 0}
+.pipe-stage{flex:1;text-align:center;padding:8px 4px;border-radius:6px;background:var(--surf2);position:relative;cursor:pointer;transition:all .12s}
+.pipe-stage:hover{background:var(--surf3)}
+.pipe-num{font-size:1.3rem;font-weight:800;line-height:1;margin-bottom:2px}
+.pipe-label{font-size:.52rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
+.pipe-stage .pipe-bar{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 6px 6px}
+
+/* Panel: Production live (center bottom) */
+.prod-line{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--brd)}
+.prod-line:last-child{border:0}
+.prod-name{font-size:.76rem;font-weight:600;min-width:60px}
+.prod-bar-wrap{flex:1;height:20px;background:var(--surf3);border-radius:4px;overflow:hidden;position:relative}
+.prod-bar{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.16,1,.3,1);position:relative}
+.prod-bar span{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:.6rem;font-weight:700;color:rgba(255,255,255,.9)}
+.prod-op{font-size:.68rem;color:var(--t2);min-width:70px;font-family:'IBM Plex Mono',monospace}
+.prod-eta{font-size:.65rem;color:var(--t3);min-width:80px;text-align:right}
+
+/* Panel: KPIs + Finance (right column, spans 2 rows) */
+.p-right{grid-row:1/3}
+.kpi-mini{padding:12px;border-radius:8px;background:var(--surf2);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;transition:all .12s}
+.kpi-mini:hover{background:var(--surf3)}
+.kpi-mini-l{}
+.kpi-mini-label{font-size:.58rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:2px}
+.kpi-mini-val{font-size:1.3rem;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.kpi-mini-chg{font-size:.62rem;font-weight:500;margin-top:1px}
+.kpi-mini-chg.u{color:var(--ok)}.kpi-mini-chg.d{color:var(--danger)}
+.kpi-mini-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+
+/* Gauge inline */
+.gauge-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px}
+.gauge-mini{background:var(--surf2);border-radius:8px;padding:10px;text-align:center}
+.gauge-mini-val{font-size:1.1rem;font-weight:800;font-family:'IBM Plex Mono',monospace;margin-bottom:1px}
+.gauge-mini-label{font-size:.52rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
+.gauge-mini-bar{height:3px;background:var(--surf3);border-radius:2px;margin-top:6px;overflow:hidden}
+.gauge-mini-fill{height:100%;border-radius:2px}
+
+/* Divider */
+.divider{font-size:.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);padding:12px 0 8px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+
+/* Recent payments */
+.pay-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--brd)}
+.pay-row:last-child{border:0}
+.pay-po{font-size:.72rem;font-weight:600;font-family:'IBM Plex Mono',monospace}
+.pay-client{font-size:.68rem;color:var(--t3)}
+.pay-val{font-size:.72rem;font-weight:700;color:var(--ok);font-family:'IBM Plex Mono',monospace}
+.pay-status{font-size:.6rem;font-weight:600;padding:2px 6px;border-radius:3px}
+
+/* === VIEW SWITCH === */
+.view{display:none}.view.on{display:grid}
+.view-list{display:none}.view-list.on{display:block}
+
+/* === FULL TABLE VIEW === */
+.full-view{display:none;flex-direction:column;flex:1;overflow:hidden}
+.full-view.on{display:flex}
+.fv-header{padding:14px 20px;border-bottom:1px solid var(--brd);background:var(--surf);display:flex;justify-content:space-between;align-items:center}
+.fv-header h2{font-size:1rem;font-weight:700}
+.fv-filters{display:flex;gap:8px}
+.fv-input{padding:7px 12px;border:1px solid var(--brd2);border-radius:6px;background:var(--surf2);color:var(--t1);font-family:'Outfit',sans-serif;font-size:.78rem;outline:0}
+.fv-input:focus{border-color:var(--ciano)}
+.fv-body{flex:1;overflow-y:auto;padding:0}
+.fv-body table{width:100%;border-collapse:collapse}
+.fv-body th{padding:10px 16px;text-align:left;font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);background:var(--surf2);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:1}
+.fv-body td{padding:9px 16px;font-size:.8rem;border-bottom:1px solid var(--brd);color:var(--t2)}
+.fv-body tr:hover td{background:var(--surf2)}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- LOGIN -->
+<div class="login" id="LO">
+  <img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="TOHM">
+  <div class="login-sub">Command Center</div>
+  <div class="login-row">
+    <input type="email" placeholder="E-mail" value="david@tohm.com.br">
+    <input type="password" placeholder="Senha" value="••••••">
+    <button onclick="login()">→</button>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T">
+    <span>Analytics</span>
+  </div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-status"><div class="dot"></div>Sync OK · 847 registros · há 12 min</div>
+  <div class="topbar-tabs">
+    <div class="topbar-tab on" onclick="sw('cockpit',this)">Cockpit</div>
+    <div class="topbar-tab" onclick="sw('pedidos',this)">Pedidos</div>
+    <div class="topbar-tab" onclick="sw('cadastros',this)">Cadastros</div>
+    <div class="topbar-tab" onclick="sw('producao',this)">Produção</div>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-time" id="clock">15:42:08</span>
+    <button class="topbar-btn" onclick="th()" id="tb">🌙</button>
+    <button class="topbar-btn">DH</button>
+  </div>
+</div>
+
+<!-- COCKPIT VIEW -->
+<div class="cockpit view on" id="v-cockpit">
+
+  <!-- LEFT: Alerts -->
+  <div class="panel p-alerts">
+    <div class="panel-h">
+      <h3>Alertas</h3>
+      <span class="cnt">4 ativos</span>
+    </div>
+    <div class="alert"><div class="alert-sev c"></div><div class="alert-t">Faturado sem embarque registrado</div><div class="alert-d">NF-42891 emitida há 5 dias, sem shipping</div><div class="alert-meta"><span class="po">PO-0388</span><span class="tm">23min</span></div></div>
+    <div class="alert"><div class="alert-sev c"></div><div class="alert-t">NF não debitou estoque</div><div class="alert-d">NF-42885 — estoque TWS-200 intacto</div><div class="alert-meta"><span class="po">PO-0385</span><span class="tm">2h</span></div></div>
+    <div class="alert"><div class="alert-sev w"></div><div class="alert-t">Qty divergente no Drummer</div><div class="alert-d">Drummer 4.800 ≠ Protheus 5.200</div><div class="alert-meta"><span class="po">PO-0389</span><span class="tm">4h</span></div></div>
+    <div class="alert"><div class="alert-sev w"></div><div class="alert-t">PO sem pagamento</div><div class="alert-d">Entregue há 32 dias, R$0 registrado</div><div class="alert-meta"><span class="po">PO-0371</span><span class="tm">6h</span></div></div>
+    <div class="alert" style="opacity:.35"><div class="alert-sev i"></div><div class="alert-t" style="text-decoration:line-through">Divergência qty resolvida</div><div class="alert-d">Driver Unit D-50 — corrigido</div><div class="alert-meta"><span class="po">PO-0380</span><span class="tm">ontem</span></div></div>
+
+    <div class="divider" style="margin-top:16px">Sistema</div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;justify-content:space-between;font-size:.7rem;padding:6px 0;border-bottom:1px solid var(--brd)"><span style="color:var(--t3)">Sync Job</span><span style="color:var(--ok);font-weight:600">● Online</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:.7rem;padding:6px 0;border-bottom:1px solid var(--brd)"><span style="color:var(--t3)">DB Protheus</span><span style="color:var(--ok);font-weight:600">● 42ms</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:.7rem;padding:6px 0;border-bottom:1px solid var(--brd)"><span style="color:var(--t3)">DB Drummer</span><span style="color:var(--ok);font-weight:600">● 38ms</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:.7rem;padding:6px 0"><span style="color:var(--t3)">API</span><span style="color:var(--ok);font-weight:600">● 12ms</span></div>
+    </div>
+  </div>
+
+  <!-- CENTER TOP: Pipeline + Orders -->
+  <div class="panel">
+    <div class="panel-h">
+      <h3>Pipeline de Pedidos</h3>
+      <span class="cnt">38 em aberto</span>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-stage"><div class="pipe-num" style="color:var(--ciano)">5</div><div class="pipe-label">Recebidos</div><div class="pipe-bar" style="background:var(--ciano)"></div></div>
+      <div class="pipe-stage"><div class="pipe-num" style="color:var(--laranja)">8</div><div class="pipe-label">Produção</div><div class="pipe-bar" style="background:var(--laranja)"></div></div>
+      <div class="pipe-stage"><div class="pipe-num" style="color:var(--warn)">4</div><div class="pipe-label">Estoque</div><div class="pipe-bar" style="background:var(--warn)"></div></div>
+      <div class="pipe-stage"><div class="pipe-num" style="color:var(--bege)">12</div><div class="pipe-label">Faturado</div><div class="pipe-bar" style="background:var(--bege)"></div></div>
+      <div class="pipe-stage"><div class="pipe-num" style="color:var(--ok)">7</div><div class="pipe-label">Embarcado</div><div class="pipe-bar" style="background:var(--ok)"></div></div>
+      <div class="pipe-stage"><div class="pipe-num" style="color:var(--t3)">2</div><div class="pipe-label">Entregue</div><div class="pipe-bar" style="background:var(--t3)"></div></div>
+    </div>
+
+    <div class="order-row" style="border-bottom:1px solid var(--brd2)">
+      <span class="order-po" style="color:var(--t3);font-size:.58rem;font-weight:700;letter-spacing:1px">PO</span>
+      <span class="order-client" style="color:var(--t3);font-size:.58rem;font-weight:700;letter-spacing:1px">CLIENTE</span>
+      <span class="order-product" style="color:var(--t3);font-size:.58rem;font-weight:700;letter-spacing:1px">PRODUTO</span>
+      <span class="order-status" style="color:var(--t3);font-size:.58rem;font-weight:700;letter-spacing:1px">STATUS</span>
+      <span class="order-val" style="color:var(--t3);font-size:.58rem;font-weight:700;letter-spacing:1px">VALOR</span>
+    </div>
+    <div class="order-row"><span class="order-po" style="color:var(--danger)">PO-0388</span><span class="order-client">Bose Corporation</span><span class="order-product">Driver D-50</span><span class="order-status"><span class="badge b-d">ALERT</span></span><span class="order-val">$60k</span></div>
+    <div class="order-row"><span class="order-po">PO-0391</span><span class="order-client">Harman Intl</span><span class="order-product">TWS-200 Pro</span><span class="order-status"><span class="badge b-i">INVOICED</span></span><span class="order-val">$84k</span></div>
+    <div class="order-row"><span class="order-po">PO-0389</span><span class="order-client">Samsung</span><span class="order-product">Soundbar SB-400</span><span class="order-status"><span class="badge b-w">PRODUCTION</span></span><span class="order-val">$312k</span></div>
+    <div class="order-row"><span class="order-po">PO-0390</span><span class="order-client">JBL Professional</span><span class="order-product">BT-Speaker MK3</span><span class="order-status"><span class="badge b-ok">SHIPPED</span></span><span class="order-val">$127k</span></div>
+    <div class="order-row"><span class="order-po">PO-0386</span><span class="order-client">Harman Intl</span><span class="order-product">Subwoofer SW-12</span><span class="order-status"><span class="badge b-i">NF_ISSUED</span></span><span class="order-val">$210k</span></div>
+    <div class="order-row"><span class="order-po">PO-0387</span><span class="order-client">Sonos Inc</span><span class="order-product">TWS-100</span><span class="order-status"><span class="badge b-ok">DELIVERED</span></span><span class="order-val">$90k</span></div>
+  </div>
+
+  <!-- CENTER BOTTOM: Production Live -->
+  <div class="panel">
+    <div class="panel-h">
+      <h3>Produção — Linhas</h3>
+      <span class="cnt" style="color:var(--ok)">● AO VIVO</span>
+    </div>
+
+    <div class="gauge-row">
+      <div class="gauge-mini"><div class="gauge-mini-val" style="color:var(--ok)">88%</div><div class="gauge-mini-label">OEE</div><div class="gauge-mini-bar"><div class="gauge-mini-fill" style="width:88%;background:var(--ok)"></div></div></div>
+      <div class="gauge-mini"><div class="gauge-mini-val" style="color:var(--ciano)">80%</div><div class="gauge-mini-label">Disponibilidade</div><div class="gauge-mini-bar"><div class="gauge-mini-fill" style="width:80%;background:var(--ciano)"></div></div></div>
+      <div class="gauge-mini"><div class="gauge-mini-val" style="color:var(--laranja)">95%</div><div class="gauge-mini-label">Qualidade</div><div class="gauge-mini-bar"><div class="gauge-mini-fill" style="width:95%;background:var(--laranja)"></div></div></div>
+    </div>
+
+    <div class="prod-line">
+      <span class="prod-name">Linha 1</span>
+      <div class="prod-bar-wrap"><div class="prod-bar" style="width:72%;background:linear-gradient(90deg,var(--ciano),#5AA8DD)"><span>72%</span></div></div>
+      <span class="prod-op">OP-4521</span>
+      <span class="prod-eta">ETA 16:30</span>
+    </div>
+    <div class="prod-line">
+      <span class="prod-name">Linha 2</span>
+      <div class="prod-bar-wrap"><div class="prod-bar" style="width:45%;background:linear-gradient(90deg,var(--laranja),#F5A868)"><span>45%</span></div></div>
+      <span class="prod-op">OP-4522</span>
+      <span class="prod-eta">ETA amanhã</span>
+    </div>
+    <div class="prod-line">
+      <span class="prod-name">Linha 3</span>
+      <div class="prod-bar-wrap"><div class="prod-bar" style="width:12%;background:linear-gradient(90deg,var(--ok),#6EC9A0)"><span>12%</span></div></div>
+      <span class="prod-op">OP-4523</span>
+      <span class="prod-eta">ETA 20/03</span>
+    </div>
+    <div class="prod-line">
+      <span class="prod-name" style="color:var(--t3)">Linha 4</span>
+      <div class="prod-bar-wrap"><div class="prod-bar" style="width:0%;background:var(--t3)"></div></div>
+      <span class="prod-op" style="color:var(--t3)">—</span>
+      <span class="prod-eta" style="color:var(--t3)">Ociosa</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: KPIs + Finance -->
+  <div class="panel p-right">
+    <div class="panel-h"><h3>Indicadores</h3></div>
+
+    <div class="kpi-mini">
+      <div class="kpi-mini-l"><div class="kpi-mini-label">Faturamento Mar</div><div class="kpi-mini-val" style="color:var(--ciano)">R$ 2.4M</div><div class="kpi-mini-chg u">▲ 12% vs Fev</div></div>
+      <div class="kpi-mini-icon" style="background:rgba(56,143,206,.1)">💰</div>
+    </div>
+    <div class="kpi-mini">
+      <div class="kpi-mini-l"><div class="kpi-mini-label">POs em Aberto</div><div class="kpi-mini-val" style="color:var(--laranja)">38</div><div class="kpi-mini-chg">+5 esta semana</div></div>
+      <div class="kpi-mini-icon" style="background:rgba(242,143,73,.1)">📦</div>
+    </div>
+    <div class="kpi-mini">
+      <div class="kpi-mini-l"><div class="kpi-mini-label">Taxa de Entrega</div><div class="kpi-mini-val" style="color:var(--ok)">94%</div><div class="kpi-mini-chg u">▲ 3%</div></div>
+      <div class="kpi-mini-icon" style="background:rgba(76,175,130,.1)">📊</div>
+    </div>
+    <div class="kpi-mini">
+      <div class="kpi-mini-l"><div class="kpi-mini-label">Ticket Médio</div><div class="kpi-mini-val">$147k</div><div class="kpi-mini-chg u">▲ 8%</div></div>
+      <div class="kpi-mini-icon" style="background:rgba(204,195,184,.1)">🎯</div>
+    </div>
+
+    <div class="divider">Financeiro</div>
+    <div class="pay-row"><div><div class="pay-po">PO-0387</div><div class="pay-client">Sonos Inc</div></div><div class="pay-val">$90,000</div></div>
+    <div class="pay-row"><div><div class="pay-po">PO-0352</div><div class="pay-client">Harman Intl</div></div><div class="pay-val">$156,000</div></div>
+    <div class="pay-row"><div><div class="pay-po">PO-0340</div><div class="pay-client">Samsung</div></div><div class="pay-val">$220,000</div></div>
+
+    <div class="divider">Recebíveis (aberto)</div>
+    <div class="pay-row"><div><div class="pay-po" style="color:var(--warn)">PO-0371</div><div class="pay-client">JBL · 32 dias</div></div><div style="font-size:.72rem;font-weight:700;color:var(--warn);font-family:'IBM Plex Mono',monospace">$180,000</div></div>
+    <div class="pay-row"><div><div class="pay-po" style="color:var(--danger)">PO-0358</div><div class="pay-client">Bose · 45 dias</div></div><div style="font-size:.72rem;font-weight:700;color:var(--danger);font-family:'IBM Plex Mono',monospace">$95,000</div></div>
+
+    <div class="divider">Cadastros</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+      <div style="background:var(--surf2);border-radius:6px;padding:10px;text-align:center"><div style="font-size:1.1rem;font-weight:800;font-family:'IBM Plex Mono',monospace">124</div><div style="font-size:.52rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3)">Clientes</div></div>
+      <div style="background:var(--surf2);border-radius:6px;padding:10px;text-align:center"><div style="font-size:1.1rem;font-weight:800;font-family:'IBM Plex Mono',monospace">867</div><div style="font-size:.52rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3)">Produtos</div></div>
+      <div style="background:var(--surf2);border-radius:6px;padding:10px;text-align:center"><div style="font-size:1.1rem;font-weight:800;font-family:'IBM Plex Mono',monospace">12</div><div style="font-size:.52rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3)">Divisões</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FULL TABLE VIEWS -->
+<div class="full-view" id="v-pedidos">
+  <div class="fv-header">
+    <h2>Pedidos — Visão Completa</h2>
+    <div class="fv-filters">
+      <input class="fv-input" placeholder="Buscar PO, cliente..." style="width:220px">
+      <select class="fv-input"><option>Todos os status</option><option>INVOICED</option><option>SHIPPED</option><option>IN_PRODUCTION</option></select>
+      <select class="fv-input"><option>Mar 2026</option><option>Fev 2026</option></select>
+      <button style="padding:7px 16px;background:var(--laranja);color:#fff;border:0;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer">+ Novo</button>
+    </div>
+  </div>
+  <div class="fv-body">
+    <table>
+      <thead><tr><th>PO</th><th>Cliente</th><th>Divisão</th><th>Produto</th><th>Qtd</th><th>Status</th><th>Embarque</th><th>Valor</th><th>Pagamento</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--t1);font-family:'IBM Plex Mono',monospace">PO-2024-0391</td><td>Harman International</td><td>Div A</td><td>TWS-200 Pro</td><td>12.000</td><td><span class="badge b-i">INVOICED</span></td><td>18/03/2026</td><td style="font-weight:600;font-family:'IBM Plex Mono',monospace">US$ 84,000</td><td><span class="badge b-w">Pendente</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--t1);font-family:'IBM Plex Mono',monospace">PO-2024-0390</td><td>JBL Professional</td><td>Div B</td><td>BT-Speaker MK3</td><td>8.500</td><td><span class="badge b-ok">SHIPPED</span></td><td>12/03/2026</td><td style="font-weight:600;font-family:'IBM Plex Mono',monospace">US$ 127,500</td><td><span class="badge b-ok">Pago</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--t1);font-family:'IBM Plex Mono',monospace">PO-2024-0389</td><td>Samsung Electronics</td><td>Div A</td><td>Soundbar SB-400</td><td>5.200</td><td><span class="badge b-w">IN_PRODUCTION</span></td><td>25/03/2026</td><td style="font-weight:600;font-family:'IBM Plex Mono',monospace">US$ 312,000</td><td><span class="badge" style="background:var(--surf3);color:var(--t3)">N/A</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--danger);font-family:'IBM Plex Mono',monospace">PO-2024-0388</td><td>Bose Corporation</td><td>Div A</td><td>Driver Unit D-50</td><td>20.000</td><td><span class="badge b-d">ALERT</span></td><td>—</td><td style="font-weight:600;font-family:'IBM Plex Mono',monospace">US$ 60,000</td><td><span class="badge" style="background:var(--surf3);color:var(--t3)">N/A</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--t1);font-family:'IBM Plex Mono',monospace">PO-2024-0387</td><td>Sonos Inc</td><td>Div B</td><td>TWS-100</td><td>15.000</td><td><span class="badge b-ok">DELIVERED</span></td><td>05/03/2026</td><td style="font-weight:600;font-family:'IBM Plex Mono',monospace">US$ 90,000</td><td><span class="badge b-ok">Pago</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--t1);font-family:'IBM Plex Mono',monospace">PO-2024-0386</td><td>Harman International</td><td>Div A</td><td>Subwoofer SW-12</td><td>3.000</td><td><span class="badge b-i">NF_ISSUED</span></td><td>20/03/2026</td><td style="font-weight:600;font-family:'IBM Plex Mono',monospace">US$ 210,000</td><td><span class="badge b-w">Pendente</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="full-view" id="v-cadastros">
+  <div class="fv-header"><h2>Cadastros</h2><div class="fv-filters"><input class="fv-input" placeholder="Buscar..." style="width:220px"><button style="padding:7px 16px;background:var(--laranja);color:#fff;border:0;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer">+ Novo</button></div></div>
+  <div class="fv-body">
+    <table>
+      <thead><tr><th>Código</th><th>Tipo</th><th>Nome</th><th>Família</th><th>Componentes</th><th>Atualização</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600;color:var(--t1)">EST-001</td><td>Estrutura</td><td>TWS-200 Pro</td><td>True Wireless</td><td>24</td><td>14/03/2026</td><td><span class="badge b-ok">Ativa</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--t1)">EST-002</td><td>Estrutura</td><td>BT-Speaker MK3</td><td>BT Speaker</td><td>31</td><td>12/03/2026</td><td><span class="badge b-ok">Ativa</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--t1)">EST-003</td><td>Estrutura</td><td>Soundbar SB-400</td><td>Soundbar</td><td>42</td><td>10/03/2026</td><td><span class="badge b-w">Revisão</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--t1)">EST-004</td><td>Estrutura</td><td>Subwoofer SW-12</td><td>Subwoofer</td><td>18</td><td>08/03/2026</td><td><span class="badge b-ok">Ativa</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="full-view" id="v-producao">
+  <div class="fv-header"><h2>Produção — Detalhe</h2><div class="fv-filters"><select class="fv-input"><option>Hoje</option><option>Esta semana</option></select><select class="fv-input"><option>Todas as linhas</option></select></div></div>
+  <div class="fv-body">
+    <table>
+      <thead><tr><th>OP</th><th>Produto</th><th>Linha</th><th>Progresso</th><th>Qtd Plan</th><th>Qtd Prod</th><th>Rejeitos</th><th>ETA</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600;color:var(--t1);font-family:'IBM Plex Mono',monospace">OP-4521</td><td>TWS-200 Pro</td><td>Linha 1</td><td><div style="display:flex;align-items:center;gap:6px"><div style="width:80px;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:72%;height:100%;background:var(--ok);border-radius:3px"></div></div><span style="font-size:.7rem;font-weight:600">72%</span></div></td><td>12.000</td><td>8.640</td><td style="color:var(--warn)">156</td><td>Hoje 16:30</td><td><span class="badge b-ok">Rodando</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--t1);font-family:'IBM Plex Mono',monospace">OP-4522</td><td>BT-Speaker MK3</td><td>Linha 2</td><td><div style="display:flex;align-items:center;gap:6px"><div style="width:80px;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:45%;height:100%;background:var(--ciano);border-radius:3px"></div></div><span style="font-size:.7rem;font-weight:600">45%</span></div></td><td>8.500</td><td>3.825</td><td>89</td><td>Amanhã 10:00</td><td><span class="badge b-ok">Rodando</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--t1);font-family:'IBM Plex Mono',monospace">OP-4523</td><td>Soundbar SB-400</td><td>Linha 3</td><td><div style="display:flex;align-items:center;gap:6px"><div style="width:80px;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:12%;height:100%;background:var(--laranja);border-radius:3px"></div></div><span style="font-size:.7rem;font-weight:600">12%</span></div></td><td>5.200</td><td>624</td><td>67</td><td>20/03</td><td><span class="badge b-ok">Rodando</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--t3);font-family:'IBM Plex Mono',monospace">OP-4524</td><td>Subwoofer SW-12</td><td>—</td><td><div style="display:flex;align-items:center;gap:6px"><div style="width:80px;height:6px;background:var(--surf3);border-radius:3px"></div><span style="font-size:.7rem;color:var(--t3)">0%</span></div></td><td>3.000</td><td>0</td><td>0</td><td>18/03</td><td><span class="badge" style="background:var(--surf3);color:var(--t3)">Na fila</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function login(){document.getElementById('LO').classList.add('off')}
+function th(){const b=document.body,n=b.dataset.theme==='light'?'dark':'light';b.dataset.theme=n;document.getElementById('tb').textContent=n==='dark'?'🌙':'☀️'}
+function sw(id,el){
+  document.querySelectorAll('.view,.full-view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('v-'+id).classList.add('on');
+  document.querySelectorAll('.topbar-tab').forEach(t=>t.classList.remove('on'));
+  if(el)el.classList.add('on');
+}
+// Clock
+setInterval(()=>{const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('pt-BR')},1000);
+document.addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+</script>
+</body>
+</html>
