@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Cadastros — Tohm Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Source+Serif+4:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--azul:#141E28;--ciano:#388FCE;--laranja:#F28F49;--ok:#4CAF82;--warn:#D4960A;--danger:#D05050}
+[data-theme="light"]{--bg:#F7F5F1;--bg2:#EFECE7;--surf:#FFF;--surf2:#FAF8F5;--surf3:#F0EDE8;--brd:rgba(20,30,40,.06);--brd2:rgba(20,30,40,.1);--t1:#141E28;--t2:#5A6577;--t3:#9AA3B0;--sh:0 1px 3px rgba(20,30,40,.04);--sh2:0 8px 24px rgba(20,30,40,.08);--logo-filter:none}
+[data-theme="dark"]{--bg:#0B0D12;--bg2:#10131A;--surf:#151820;--surf2:#1A1E28;--surf3:#1F2430;--brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.08);--t1:#E0DCD6;--t2:#6E7787;--t3:#3D4555;--sh:0 1px 3px rgba(0,0,0,.3);--sh2:0 8px 24px rgba(0,0,0,.4);--logo-filter:brightness(0) invert(1)}
+html{font-size:14px}body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.mono{font-family:'IBM Plex Mono',monospace}.serif{font-family:'Source Serif 4',serif}
+.topbar{height:48px;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.tb-back{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;border:1px solid var(--brd2);background:var(--surf);color:var(--t2);font-family:inherit;font-size:.75rem;font-weight:500;cursor:pointer;text-decoration:none;transition:all .12s}.tb-back:hover{background:var(--surf2);color:var(--t1)}
+.tb-sep{width:1px;height:22px;background:var(--brd2)}.tb-logo{display:flex;align-items:center;gap:8px}.tb-logo img{height:14px;filter:var(--logo-filter)}.tb-logo span{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.tb-title{font-size:.9rem;font-weight:600;margin-left:4px}.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--brd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem}.tb-btn:hover{background:var(--surf2);color:var(--t1)}
+.tb-time{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--t3)}
+.ph{padding:14px 24px;border-bottom:1px solid var(--brd);background:var(--surf);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}.ph h2{font-size:1.05rem;font-weight:700}.ph-s{font-size:.75rem;color:var(--t3);margin-left:12px}
+.ph-r{display:flex;align-items:center;gap:8px}.fin{padding:7px 12px;border:1px solid var(--brd2);border-radius:6px;background:var(--surf2);color:var(--t1);font-family:inherit;font-size:.78rem;outline:0}.fin:focus{border-color:var(--ciano)}.fin::placeholder{color:var(--t3)}
+.btn{padding:7px 16px;border-radius:6px;font-family:inherit;font-size:.75rem;font-weight:600;cursor:pointer;border:0}.btn-p{background:var(--azul);color:#fff}[data-theme="dark"] .btn-p{background:var(--ciano)}.btn-p:hover{transform:translateY(-1px)}
+.btn-s{background:var(--surf2);color:var(--t1);border:1px solid var(--brd2)}
+.main{flex:1;overflow-y:auto}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:20px 24px}
+.cc{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:24px;box-shadow:var(--sh);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.cc:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+.cc:nth-child(1)::before{background:var(--ciano)}.cc:nth-child(2)::before{background:var(--laranja)}.cc:nth-child(3)::before{background:var(--ok)}
+.cc h4{font-family:'Source Serif 4',serif;font-size:1.1rem;margin-bottom:4px}.cc p{font-size:.74rem;color:var(--t3);line-height:1.4}
+.cc .nm{margin-top:14px;font-size:1.7rem;font-weight:800;color:var(--laranja);font-family:'IBM Plex Mono',monospace}
+.cc .nm span{font-family:'Outfit',sans-serif;font-size:.62rem;color:var(--t3);font-weight:400}
+.ct{padding:0 24px 24px}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 16px;text-align:left;font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);background:var(--surf2);border-bottom:1px solid var(--brd);position:sticky;top:0}
+td{padding:10px 16px;font-size:.82rem;border-bottom:1px solid var(--brd);color:var(--t2)}tr:hover td{background:var(--surf2)}
+.bdg{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.6rem;font-weight:700;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.b-ok{background:rgba(76,175,130,.1);color:var(--ok)}.b-w{background:rgba(212,150,10,.1);color:var(--warn)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
+</style></head><body data-theme="light">
+<div class="topbar"><a class="tb-back" href="index.html">← Portal</a><div class="tb-sep"></div><div class="tb-logo"><img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T"><span>Analytics</span></div><span class="tb-title">Cadastros</span><div class="tb-right"><span class="tb-time" id="clock"></span><button class="tb-btn" onclick="th()" id="tb">☀️</button></div></div>
+<div class="ph"><div style="display:flex;align-items:center"><h2>Cadastro Geral</h2><span class="ph-s">Clientes, produtos, divisões e estruturas</span></div><div class="ph-r"><input class="fin" placeholder="Buscar..." style="width:200px"><button class="btn btn-p">+ Novo Cadastro</button></div></div>
+<div class="main">
+  <div class="cg">
+    <div class="cc"><h4>Clientes</h4><p>Cadastro unificado com vínculo direto ao Protheus. Divisões, contatos, condições comerciais.</p><div class="nm">124 <span>registros</span></div></div>
+    <div class="cc"><h4>Produtos</h4><p>Famílias, categorias, SKUs. Cadastro único vinculado ao banco de dados central.</p><div class="nm">867 <span>registros</span></div></div>
+    <div class="cc"><h4>Divisões</h4><p>Segmentação comercial de clientes por divisão. Antes em planilha, agora centralizado.</p><div class="nm">12 <span>divisões</span></div></div>
+  </div>
+  <div class="ct">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3)">Estruturas de Produto</h3><button class="btn btn-s" style="font-size:.72rem">+ Nova Estrutura</button></div>
+    <div style="background:var(--surf);border:1px solid var(--brd);border-radius:10px;overflow:hidden;box-shadow:var(--sh)">
+    <table><thead><tr><th>Código</th><th>Produto</th><th>Família</th><th>Componentes</th><th>Última Atualização</th><th>Status</th></tr></thead><tbody>
+      <tr><td class="mono" style="font-weight:600;color:var(--t1)">EST-001</td><td>TWS-200 Pro</td><td>True Wireless</td><td>24 itens</td><td>14/03/2026</td><td><span class="bdg b-ok">Ativa</span></td></tr>
+      <tr><td class="mono" style="font-weight:600;color:var(--t1)">EST-002</td><td>BT-Speaker MK3</td><td>Bluetooth Speaker</td><td>31 itens</td><td>12/03/2026</td><td><span class="bdg b-ok">Ativa</span></td></tr>
+      <tr><td class="mono" style="font-weight:600;color:var(--t1)">EST-003</td><td>Soundbar SB-400</td><td>Soundbar</td><td>42 itens</td><td>10/03/2026</td><td><span class="bdg b-w">Em revisão</span></td></tr>
+      <tr><td class="mono" style="font-weight:600;color:var(--t1)">EST-004</td><td>Subwoofer SW-12</td><td>Subwoofer</td><td>18 itens</td><td>08/03/2026</td><td><span class="bdg b-ok">Ativa</span></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+<script>
+function th(){const b=document.body,n=b.dataset.theme==='light'?'dark':'light';b.dataset.theme=n;document.getElementById('tb').textContent=n==='dark'?'🌙':'☀️';localStorage.setItem('tohm-theme',n)}
+const s=localStorage.getItem('tohm-theme');if(s){document.body.dataset.theme=s;document.getElementById('tb').textContent=s==='dark'?'🌙':'☀️'}
+function uc(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}setInterval(uc,1000);uc();
+</script></body></html>

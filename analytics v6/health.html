@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Health — Tohm Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--azul:#141E28;--ciano:#388FCE;--laranja:#F28F49;--ok:#4CAF82;--warn:#D4960A;--danger:#D05050}
+[data-theme="light"]{--bg:#F7F5F1;--surf:#FFF;--surf2:#FAF8F5;--surf3:#F0EDE8;--brd:rgba(20,30,40,.06);--brd2:rgba(20,30,40,.1);--t1:#141E28;--t2:#5A6577;--t3:#9AA3B0;--sh:0 1px 3px rgba(20,30,40,.04);--logo-filter:none}
+[data-theme="dark"]{--bg:#0B0D12;--surf:#151820;--surf2:#1A1E28;--surf3:#1F2430;--brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.08);--t1:#E0DCD6;--t2:#6E7787;--t3:#3D4555;--sh:0 1px 3px rgba(0,0,0,.3);--logo-filter:brightness(0) invert(1)}
+html{font-size:14px}body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.mono{font-family:'IBM Plex Mono',monospace}
+.topbar{height:48px;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.tb-back{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;border:1px solid var(--brd2);background:var(--surf);color:var(--t2);font-family:inherit;font-size:.75rem;font-weight:500;cursor:pointer;text-decoration:none}.tb-back:hover{background:var(--surf2);color:var(--t1)}
+.tb-sep{width:1px;height:22px;background:var(--brd2)}.tb-logo{display:flex;align-items:center;gap:8px}.tb-logo img{height:14px;filter:var(--logo-filter)}.tb-logo span{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.tb-title{font-size:.9rem;font-weight:600;margin-left:4px}.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--brd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem}.tb-btn:hover{background:var(--surf2);color:var(--t1)}
+.tb-time{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--t3)}
+.ph{padding:14px 24px;border-bottom:1px solid var(--brd);background:var(--surf);display:flex;align-items:center;flex-shrink:0}.ph h2{font-size:1.05rem;font-weight:700}.ph-s{font-size:.75rem;color:var(--t3);margin-left:12px}
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:4px;animation:bk 2s infinite}@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+.main{flex:1;overflow-y:auto;padding:20px 24px}
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+.st-card{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:20px;box-shadow:var(--sh)}
+.st-card h4{font-size:.82rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.st-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--brd);font-size:.82rem}
+.st-row:last-child{border:0}
+.st-row .label{color:var(--t3)}
+.st-row .val{font-weight:600;font-family:'IBM Plex Mono',monospace;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%}.dot.ok{background:var(--ok)}.dot.warn{background:var(--warn)}.dot.err{background:var(--danger)}
+.log{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:20px;box-shadow:var(--sh)}
+.log h4{font-size:.82rem;font-weight:600;margin-bottom:12px}
+.log-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd);font-size:.78rem}
+.log-item:last-child{border:0}
+.log-time{font-family:'IBM Plex Mono',monospace;color:var(--t3);flex-shrink:0;min-width:50px}
+.log-msg{color:var(--t2)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
+</style></head><body data-theme="light">
+<div class="topbar"><a class="tb-back" href="index.html">← Portal</a><div class="tb-sep"></div><div class="tb-logo"><img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T"><span>Analytics</span></div><span class="tb-title">Health</span><div class="tb-right"><span class="tb-time" id="clock"></span><button class="tb-btn" onclick="th()" id="tb">☀️</button></div></div>
+<div class="ph"><div style="display:flex;align-items:center"><h2>System Health</h2><span class="ph-s"><span class="live"></span>Todos os serviços operacionais</span></div></div>
+<div class="main">
+  <div class="status-grid">
+    <div class="st-card"><h4>🔗 Conexões</h4>
+      <div class="st-row"><span class="label">SQL Server (Nuvem)</span><span class="val"><span class="dot ok"></span>Online · 12ms</span></div>
+      <div class="st-row"><span class="label">Protheus DB</span><span class="val"><span class="dot ok"></span>Online · 42ms</span></div>
+      <div class="st-row"><span class="label">Drummer DB</span><span class="val"><span class="dot ok"></span>Online · 38ms</span></div>
+      <div class="st-row"><span class="label">API Backend</span><span class="val"><span class="dot ok"></span>Online · 8ms</span></div>
+    </div>
+    <div class="st-card"><h4>⚙️ Jobs Automáticos</h4>
+      <div class="st-row"><span class="label">Lifecycle Sync</span><span class="val"><span class="dot ok"></span>OK · última: 14:48</span></div>
+      <div class="st-row"><span class="label">Alertas Engine</span><span class="val"><span class="dot ok"></span>OK · última: 14:50</span></div>
+      <div class="st-row"><span class="label">Protheus Import</span><span class="val"><span class="dot ok"></span>OK · última: 14:30</span></div>
+      <div class="st-row"><span class="label">Drummer Import</span><span class="val"><span class="dot ok"></span>OK · última: 14:32</span></div>
+    </div>
+    <div class="st-card"><h4>📊 Contadores</h4>
+      <div class="st-row"><span class="label">Registros sincronizados hoje</span><span class="val">3.412</span></div>
+      <div class="st-row"><span class="label">Alertas gerados hoje</span><span class="val">7</span></div>
+      <div class="st-row"><span class="label">Alertas resolvidos hoje</span><span class="val">3</span></div>
+      <div class="st-row"><span class="label">Usuários ativos</span><span class="val">5</span></div>
+    </div>
+    <div class="st-card"><h4>💾 Armazenamento</h4>
+      <div class="st-row"><span class="label">DB Principal</span><span class="val">2.4 GB / 50 GB</span></div>
+      <div class="st-row"><span class="label">Backup mais recente</span><span class="val"><span class="dot ok"></span>Hoje 06:00</span></div>
+      <div class="st-row"><span class="label">Disco VPS</span><span class="val">18 GB / 100 GB</span></div>
+      <div class="st-row"><span class="label">Uptime</span><span class="val">99.97% (30d)</span></div>
+    </div>
+  </div>
+  <div class="log"><h4>📋 Log de Eventos (últimas 24h)</h4>
+    <div class="log-item"><span class="log-time">14:48</span><span class="log-msg">Lifecycle sync concluído — 847 registros, 4.2s, 0 erros</span></div>
+    <div class="log-item"><span class="log-time">14:50</span><span class="log-msg">Alertas engine executou — 4 ativos, 1 novo (NF-42891)</span></div>
+    <div class="log-item"><span class="log-time">13:48</span><span class="log-msg">Lifecycle sync concluído — 812 registros, 3.9s, 0 erros</span></div>
+    <div class="log-item"><span class="log-time">12:48</span><span class="log-msg">Lifecycle sync concluído — 798 registros, 4.0s, 0 erros</span></div>
+    <div class="log-item"><span class="log-time">11:30</span><span class="log-msg">Alerta PO-2024-0380 marcado como resolvido por David</span></div>
+    <div class="log-item"><span class="log-time">06:00</span><span class="log-msg">Backup automático concluído — 2.4GB, verificação OK</span></div>
+    <div class="log-item"><span class="log-time">00:00</span><span class="log-msg">Contadores diários resetados. Dia anterior: 4.201 syncs, 12 alertas</span></div>
+  </div>
+</div>
+<script>
+function th(){const b=document.body,n=b.dataset.theme==='light'?'dark':'light';b.dataset.theme=n;document.getElementById('tb').textContent=n==='dark'?'🌙':'☀️';localStorage.setItem('tohm-theme',n)}
+const s=localStorage.getItem('tohm-theme');if(s){document.body.dataset.theme=s;document.getElementById('tb').textContent=s==='dark'?'🌙':'☀️'}
+function uc(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}setInterval(uc,1000);uc();
+</script></body></html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Alertas — Tohm Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--azul:#141E28;--ciano:#388FCE;--bege:#CCC3B8;--laranja:#F28F49;--ok:#4CAF82;--warn:#D4960A;--danger:#D05050}
+[data-theme="light"]{--bg:#F7F5F1;--bg2:#EFECE7;--surf:#FFF;--surf2:#FAF8F5;--surf3:#F0EDE8;--brd:rgba(20,30,40,.06);--brd2:rgba(20,30,40,.1);--t1:#141E28;--t2:#5A6577;--t3:#9AA3B0;--sh:0 1px 3px rgba(20,30,40,.04);--sh2:0 8px 24px rgba(20,30,40,.08);--logo-filter:none}
+[data-theme="dark"]{--bg:#0B0D12;--bg2:#10131A;--surf:#151820;--surf2:#1A1E28;--surf3:#1F2430;--brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.08);--t1:#E0DCD6;--t2:#6E7787;--t3:#3D4555;--sh:0 1px 3px rgba(0,0,0,.3);--sh2:0 8px 24px rgba(0,0,0,.4);--logo-filter:brightness(0) invert(1)}
+html{font-size:14px}body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.mono{font-family:'IBM Plex Mono',monospace}
+.topbar{height:48px;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.tb-back{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;border:1px solid var(--brd2);background:var(--surf);color:var(--t2);font-family:inherit;font-size:.75rem;font-weight:500;cursor:pointer;text-decoration:none;transition:all .12s}.tb-back:hover{background:var(--surf2);color:var(--t1)}
+.tb-sep{width:1px;height:22px;background:var(--brd2)}.tb-logo{display:flex;align-items:center;gap:8px}.tb-logo img{height:14px;filter:var(--logo-filter)}.tb-logo span{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.tb-title{font-size:.9rem;font-weight:600;margin-left:4px}.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--brd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;transition:all .12s}.tb-btn:hover{background:var(--surf2);color:var(--t1)}
+.tb-time{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--t3)}
+.ph{padding:14px 24px;border-bottom:1px solid var(--brd);background:var(--surf);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}.ph h2{font-size:1.05rem;font-weight:700}.ph-s{font-size:.75rem;color:var(--t3);margin-left:12px}
+.ph-r{display:flex;align-items:center;gap:8px}
+.fin{padding:7px 12px;border:1px solid var(--brd2);border-radius:6px;background:var(--surf2);color:var(--t1);font-family:inherit;font-size:.78rem;outline:0}.fin:focus{border-color:var(--ciano)}.fin::placeholder{color:var(--t3)}
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:4px;animation:bk 2s infinite}@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+.al-ls{padding:16px 24px;flex:1;overflow-y:auto}
+.al{display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--surf);border:1px solid var(--brd);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .12s;box-shadow:var(--sh)}
+.al:hover{box-shadow:var(--sh2);transform:translateX(2px)}
+.al-sv{width:5px;height:36px;border-radius:3px;flex-shrink:0}.al-sv.c{background:var(--danger)}.al-sv.w{background:var(--warn)}.al-sv.i{background:var(--ciano)}
+.al-b{flex:1}.al-b h4{font-size:.86rem;font-weight:600;margin-bottom:3px}.al-b p{font-size:.74rem;color:var(--t3);line-height:1.4}
+.al-m{text-align:right;flex-shrink:0}.al-m .po{font-size:.74rem;font-weight:600;color:var(--ciano);font-family:'IBM Plex Mono',monospace}.al-m .tm{font-size:.64rem;color:var(--t3);margin-top:2px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
+</style></head><body data-theme="light">
+<div class="topbar"><a class="tb-back" href="index.html">← Portal</a><div class="tb-sep"></div><div class="tb-logo"><img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T"><span>Analytics</span></div><span class="tb-title">Alertas</span><div class="tb-right"><span class="tb-time" id="clock"></span><button class="tb-btn" onclick="th()" id="tb">☀️</button></div></div>
+<div class="ph"><div style="display:flex;align-items:center"><h2>Alertas</h2><span class="ph-s"><span class="live"></span>4 ativos · 2 críticos</span></div><div class="ph-r"><select class="fin"><option>Todos</option><option>Crítico</option><option>Aviso</option><option>Resolvido</option></select><input class="fin" placeholder="Buscar..." style="width:200px"></div></div>
+<div class="al-ls">
+  <div class="al"><div class="al-sv c"></div><div class="al-b"><h4>Faturado sem embarque registrado</h4><p>NF-42891 emitida há 5 dias sem registro de embarque correspondente. Verificar se produto está parado ou se o shipping não foi lançado no sistema.</p></div><div class="al-m"><div class="po">PO-2024-0388</div><div class="tm">há 23 min</div></div></div>
+  <div class="al"><div class="al-sv c"></div><div class="al-b"><h4>Faturamento não debitou estoque</h4><p>NF-42885 processada no Protheus mas estoque do produto TWS-200 permanece inalterado. Possível erro de integração.</p></div><div class="al-m"><div class="po">PO-2024-0385</div><div class="tm">há 2h</div></div></div>
+  <div class="al"><div class="al-sv w"></div><div class="al-b"><h4>PO divergente no Drummer</h4><p>Quantidade no Drummer (4.800) difere do Protheus (5.200) para produto Soundbar SB-400. Delta de 400 unidades.</p></div><div class="al-m"><div class="po">PO-2024-0389</div><div class="tm">há 4h</div></div></div>
+  <div class="al"><div class="al-sv w"></div><div class="al-b"><h4>PO sem informação de pagamento</h4><p>PO entregue há 32 dias sem nenhum registro de pagamento vinculado. Verificar com financeiro.</p></div><div class="al-m"><div class="po">PO-2024-0371</div><div class="tm">há 6h</div></div></div>
+  <div class="al" style="opacity:.4"><div class="al-sv i"></div><div class="al-b"><h4 style="text-decoration:line-through">Divergência de quantidades resolvida</h4><p>Entrada vs saída Driver Unit D-50 — corrigido manualmente por David.</p></div><div class="al-m"><div class="po">PO-2024-0380</div><div class="tm">ontem</div></div></div>
+</div>
+<script>
+function th(){const b=document.body,n=b.dataset.theme==='light'?'dark':'light';b.dataset.theme=n;document.getElementById('tb').textContent=n==='dark'?'🌙':'☀️';localStorage.setItem('tohm-theme',n)}
+const s=localStorage.getItem('tohm-theme');if(s){document.body.dataset.theme=s;document.getElementById('tb').textContent=s==='dark'?'🌙':'☀️'}
+function uc(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}setInterval(uc,1000);uc();
+</script></body></html>

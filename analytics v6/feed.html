@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feed Operacional — Tohm Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Source+Serif+4:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--azul:#141E28;--ciano:#388FCE;--bege:#CCC3B8;--bege2:#E6E1DB;--laranja:#F28F49;--ok:#4CAF82;--warn:#D4960A;--danger:#D05050}
+[data-theme="light"]{--bg:#F7F5F1;--bg2:#EFECE7;--surf:#FFFFFF;--surf2:#FAF8F5;--surf3:#F0EDE8;--brd:rgba(20,30,40,.06);--brd2:rgba(20,30,40,.1);--t1:#141E28;--t2:#5A6577;--t3:#9AA3B0;--sh:0 1px 3px rgba(20,30,40,.04);--sh2:0 8px 24px rgba(20,30,40,.08);--logo-filter:none}
+[data-theme="dark"]{--bg:#0B0D12;--bg2:#10131A;--surf:#151820;--surf2:#1A1E28;--surf3:#1F2430;--brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.08);--t1:#E0DCD6;--t2:#6E7787;--t3:#3D4555;--sh:0 1px 3px rgba(0,0,0,.3);--sh2:0 8px 24px rgba(0,0,0,.4);--logo-filter:brightness(0) invert(1)}
+html{font-size:14px}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.mono{font-family:'IBM Plex Mono',monospace}.serif{font-family:'Source Serif 4',serif}
+
+/* Top bar */
+.topbar{height:48px;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.tb-back{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;border:1px solid var(--brd2);background:var(--surf);color:var(--t2);font-family:inherit;font-size:.75rem;font-weight:500;cursor:pointer;text-decoration:none;transition:all .12s}
+.tb-back:hover{background:var(--surf2);color:var(--t1)}
+.tb-sep{width:1px;height:22px;background:var(--brd2)}
+.tb-logo{display:flex;align-items:center;gap:8px}
+.tb-logo img{height:14px;filter:var(--logo-filter)}
+.tb-logo span{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.tb-title{font-size:.9rem;font-weight:600;margin-left:4px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--brd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;transition:all .12s}
+.tb-btn:hover{background:var(--surf2);color:var(--t1)}
+.tb-time{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--t3)}
+
+/* Content */
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.page-header{padding:14px 24px;border-bottom:1px solid var(--brd);background:var(--surf);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-header h2{font-size:1.05rem;font-weight:700}
+.ph-sub{font-size:.75rem;color:var(--t3);margin-left:12px}
+.ph-r{display:flex;align-items:center;gap:8px}
+.fin{padding:7px 12px;border:1px solid var(--brd2);border-radius:6px;background:var(--surf2);color:var(--t1);font-family:inherit;font-size:.78rem;outline:0;transition:border .2s}
+.fin:focus{border-color:var(--ciano)}.fin::placeholder{color:var(--t3)}
+select.fin{cursor:pointer}
+.btn{padding:7px 16px;border-radius:6px;font-family:inherit;font-size:.75rem;font-weight:600;cursor:pointer;border:0;transition:all .15s}
+.btn-p{background:var(--azul);color:#fff}[data-theme="dark"] .btn-p{background:var(--ciano)}.btn-p:hover{transform:translateY(-1px)}
+.btn-s{background:var(--surf2);color:var(--t1);border:1px solid var(--brd2)}
+
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:4px;animation:bk 2s infinite}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Feed specific */
+.fw{flex:1;display:flex;overflow:hidden}
+.feed{flex:1;overflow-y:auto}
+.fd{padding:8px 24px;font-size:.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);background:var(--bg2);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:1}
+.fi{display:flex;gap:12px;padding:12px 24px;border-bottom:1px solid var(--brd);cursor:pointer;transition:all .1s}
+.fi:hover{background:var(--surf2)}.fi.sel{background:var(--surf);box-shadow:inset 3px 0 0 var(--ciano)}
+.fi-ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:1px}
+.fi-ic.al{background:rgba(208,80,80,.1)}.fi-ic.or{background:rgba(56,143,206,.1)}.fi-ic.pr{background:rgba(76,175,130,.1)}.fi-ic.pa{background:rgba(242,143,73,.1)}.fi-ic.sy{background:var(--surf3)}
+.fi-bd{flex:1;min-width:0}
+.fi-t{font-size:.82rem;font-weight:600;margin-bottom:1px;line-height:1.3}
+.fi-d{font-size:.72rem;color:var(--t2);line-height:1.3}
+.fi-tg{display:flex;gap:3px;margin-top:5px;flex-wrap:wrap}
+.tg{padding:2px 7px;border-radius:4px;font-size:.58rem;font-weight:600;background:var(--surf3);color:var(--t2)}
+.tg.cr{background:rgba(208,80,80,.1);color:var(--danger)}.tg.wr{background:rgba(212,150,10,.1);color:var(--warn)}.tg.ok{background:rgba(76,175,130,.1);color:var(--ok)}
+.fi-r{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.fi-tm{font-size:.6rem;color:var(--t3)}.fi-st{font-size:.55rem;font-weight:700;text-transform:uppercase}
+
+.det{width:360px;border-left:1px solid var(--brd);background:var(--surf);overflow-y:auto;flex-shrink:0;padding:24px}
+.det-h{margin-bottom:18px}.det-h h3{font-family:'Source Serif 4',serif;font-size:1.2rem;font-weight:600;margin-bottom:3px}.det-h .sub{font-size:.75rem;color:var(--t3)}
+.det-s{margin-bottom:16px}.det-s h4{font-size:.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--brd)}
+.dr{display:flex;justify-content:space-between;padding:5px 0;font-size:.78rem}.dr .lb{color:var(--t3)}.dr .vl{font-weight:600}
+.lc-t{display:flex;gap:2px;margin:8px 0}.lc-s{flex:1;height:5px;border-radius:3px;background:var(--surf3)}.lc-s.dn{background:var(--ok)}.lc-s.cu{background:var(--ciano);position:relative}.lc-s.cu::after{content:'';position:absolute;top:-3px;right:-1px;width:11px;height:11px;border-radius:50%;background:var(--ciano);border:2px solid var(--surf)}
+.lc-lb{display:flex;justify-content:space-between;font-size:.48rem;color:var(--t3);font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin-bottom:4px}
+.det-w{padding:10px;background:rgba(208,80,80,.05);border-left:3px solid var(--danger);border-radius:0 6px 6px 0;font-size:.76rem;line-height:1.5;color:var(--t2)}.det-w strong{color:var(--t1)}
+.det-a{display:flex;gap:6px;margin-top:14px}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
+</style>
+</head>
+<body data-theme="light">
+
+<div class="topbar">
+  <a class="tb-back" href="index.html">← Portal</a>
+  <div class="tb-sep"></div>
+  <div class="tb-logo"><img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T"><span>Analytics</span></div>
+  <span class="tb-title">Feed Operacional</span>
+  <div class="tb-right">
+    <span class="tb-time" id="clock"></span>
+    <button class="tb-btn" onclick="th()" id="tb">☀️</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="page-header">
+    <div style="display:flex;align-items:center"><h2>Feed Operacional</h2><span class="ph-sub"><span class="live"></span>Tempo real</span></div>
+    <div class="ph-r"><select class="fin"><option>Tudo</option><option>Alertas</option><option>Pedidos</option><option>Produção</option><option>Pagamentos</option></select><input class="fin" placeholder="Buscar..." style="width:200px"></div>
+  </div>
+  <div class="fw">
+    <div class="feed">
+      <div class="fd">Hoje — 15 Mar 2026</div>
+      <div class="fi sel" onclick="sel(this)"><div class="fi-ic al">🚨</div><div class="fi-bd"><div class="fi-t">Faturado sem embarque registrado</div><div class="fi-d">NF-42891 emitida há 5 dias, sem shipping</div><div class="fi-tg"><span class="tg cr">Crítico</span><span class="tg">PO-0388</span><span class="tg">Bose</span></div></div><div class="fi-r"><span class="fi-tm">23min</span><span class="fi-st" style="color:var(--danger)">● Aberto</span></div></div>
+      <div class="fi" onclick="sel(this)"><div class="fi-ic al">🚨</div><div class="fi-bd"><div class="fi-t">NF não debitou estoque</div><div class="fi-d">NF-42885 · estoque TWS-200 inalterado</div><div class="fi-tg"><span class="tg cr">Crítico</span><span class="tg">PO-0385</span></div></div><div class="fi-r"><span class="fi-tm">2h</span><span class="fi-st" style="color:var(--danger)">● Aberto</span></div></div>
+      <div class="fi" onclick="sel(this)"><div class="fi-ic or">📦</div><div class="fi-bd"><div class="fi-t">PO-0391 → INVOICED</div><div class="fi-d">Harman · TWS-200 Pro · 12k un · $84k</div><div class="fi-tg"><span class="tg ok">Faturado</span><span class="tg">Embarque 18/03</span></div></div><div class="fi-r"><span class="fi-tm">1h</span></div></div>
+      <div class="fi" onclick="sel(this)"><div class="fi-ic sy">✅</div><div class="fi-bd"><div class="fi-t">Sync concluído — 847 registros</div><div class="fi-d">4.2s · Próximo: 16:00</div><div class="fi-tg"><span class="tg ok">OK</span><span class="tg">Sistema</span></div></div><div class="fi-r"><span class="fi-tm">1h</span></div></div>
+      <div class="fi" onclick="sel(this)"><div class="fi-ic al">⚠️</div><div class="fi-bd"><div class="fi-t">Qty divergente Drummer</div><div class="fi-d">SB-400 · 4.800 ≠ 5.200</div><div class="fi-tg"><span class="tg wr">Aviso</span><span class="tg">PO-0389</span><span class="tg">Samsung</span></div></div><div class="fi-r"><span class="fi-tm">4h</span><span class="fi-st" style="color:var(--warn)">● Aberto</span></div></div>
+      <div class="fi" onclick="sel(this)"><div class="fi-ic pa">💰</div><div class="fi-bd"><div class="fi-t">Pagamento — PO-0352</div><div class="fi-d">Harman · $156k · Wire</div><div class="fi-tg"><span class="tg ok">Confirmado</span></div></div><div class="fi-r"><span class="fi-tm">3h</span></div></div>
+      <div class="fi" onclick="sel(this)"><div class="fi-ic pr">🏭</div><div class="fi-bd"><div class="fi-t">Linha 1 — OP-4521 a 72%</div><div class="fi-d">TWS-200 Pro · 8.640/12k · ETA 16:30</div><div class="fi-tg"><span class="tg ok">No prazo</span></div></div><div class="fi-r"><span class="fi-tm">5h</span></div></div>
+      <div class="fd">Ontem — 14 Mar 2026</div>
+      <div class="fi" onclick="sel(this)"><div class="fi-ic or">📦</div><div class="fi-bd"><div class="fi-t">PO-0390 → SHIPPED</div><div class="fi-d">JBL · BT-Speaker MK3</div><div class="fi-tg"><span class="tg ok">Embarcado</span></div></div><div class="fi-r"><span class="fi-tm">ontem</span></div></div>
+      <div class="fi" style="opacity:.4" onclick="sel(this)"><div class="fi-ic sy">✓</div><div class="fi-bd"><div class="fi-t" style="text-decoration:line-through">Divergência qty resolvida</div><div class="fi-d">Driver D-50 corrigido</div><div class="fi-tg"><span class="tg">Resolvido</span></div></div><div class="fi-r"><span class="fi-tm">ontem</span></div></div>
+    </div>
+    <div class="det">
+      <div class="det-h"><h3>Faturado sem embarque</h3><div class="sub">PO-2024-0388 · Bose · Driver D-50</div></div>
+      <div class="det-s"><h4>Lifecycle</h4><div class="lc-lb"><span>Recebido</span><span>Produção</span><span>Estoque</span><span>Faturado</span><span>Embarcado</span><span>Entregue</span></div><div class="lc-t"><div class="lc-s dn"></div><div class="lc-s dn"></div><div class="lc-s dn"></div><div class="lc-s cu"></div><div class="lc-s"></div><div class="lc-s"></div></div></div>
+      <div class="det-s"><h4>Dados</h4><div class="dr"><span class="lb">PO</span><span class="vl mono">PO-2024-0388</span></div><div class="dr"><span class="lb">Cliente</span><span class="vl">Bose Corporation</span></div><div class="dr"><span class="lb">Produto</span><span class="vl">Driver Unit D-50</span></div><div class="dr"><span class="lb">Qty</span><span class="vl">20.000</span></div><div class="dr"><span class="lb">Valor</span><span class="vl" style="font-weight:700">US$ 60,000</span></div><div class="dr"><span class="lb">NF</span><span class="vl mono">42891</span></div><div class="dr"><span class="lb">Data NF</span><span class="vl">10/03/2026</span></div><div class="dr"><span class="lb">Embarque</span><span class="vl" style="color:var(--danger);font-weight:700">Não registrado</span></div></div>
+      <div class="det-s"><h4>Problema</h4><div class="det-w">NF emitida há <strong>5 dias</strong> sem embarque. Produto pode estar parado ou shipping não lançado.</div></div>
+      <div class="det-a"><button class="btn btn-p">Registrar Embarque</button><button class="btn btn-s">Investigar</button><button class="btn btn-s">Ignorar</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function th(){const b=document.body,n=b.dataset.theme==='light'?'dark':'light';b.dataset.theme=n;document.getElementById('tb').textContent=n==='dark'?'🌙':'☀️';localStorage.setItem('tohm-theme',n)}
+function sel(el){document.querySelectorAll('.fi').forEach(f=>f.classList.remove('sel'));el.classList.add('sel')}
+const s=localStorage.getItem('tohm-theme');if(s){document.body.dataset.theme=s;document.getElementById('tb').textContent=s==='dark'?'🌙':'☀️'}
+function uc(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}setInterval(uc,1000);uc();
+</script>
+</body>
+</html>
