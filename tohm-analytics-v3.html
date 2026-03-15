@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tohm Analytics — Proposta 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --azul:#141E28;--ciano:#388FCE;--bege:#CCC3B8;--bege2:#E6E1DB;
+  --laranja:#F28F49;--branco:#FFF;--ok:#4CAF82;--warn:#E5A100;--danger:#E05555;
+}
+[data-theme="dark"]{
+  --bg:#0E1117;--bg2:#151921;--surf:#1A1F2B;--surf2:#212735;--surf3:#282F3D;
+  --brd:rgba(255,255,255,.05);--brd2:rgba(255,255,255,.09);
+  --t1:#F0ECE6;--t2:#8E96A3;--t3:#4D5565;
+  --rail-bg:#12161E;--rail-brd:rgba(255,255,255,.04);
+  --sh:0 2px 8px rgba(0,0,0,.25);--sh2:0 12px 40px rgba(0,0,0,.4);
+  --glow:rgba(56,143,206,.06);
+  --logo-filter:brightness(0) invert(1);
+  --noise-opacity:.03;
+}
+[data-theme="light"]{
+  --bg:#F5F2ED;--bg2:#EDEAE4;--surf:#FFFFFF;--surf2:#FAF9F6;--surf3:#F2EFEA;
+  --brd:rgba(20,30,40,.06);--brd2:rgba(20,30,40,.1);
+  --t1:#141E28;--t2:#5A6577;--t3:#98A1AD;
+  --rail-bg:#141E28;--rail-brd:rgba(255,255,255,.06);
+  --sh:0 2px 8px rgba(20,30,40,.04);--sh2:0 12px 40px rgba(20,30,40,.08);
+  --glow:rgba(56,143,206,.04);
+  --logo-filter:brightness(0) invert(1);
+  --noise-opacity:.015;
+}
+html{font-size:14px}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;position:relative}
+
+/* Noise texture */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:var(--noise-opacity);
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:128px 128px;
+}
+
+/* === LOGIN === */
+.LO{position:fixed;inset:0;z-index:1000;display:flex;transition:all .7s cubic-bezier(.7,0,.3,1)}
+.LO.off{opacity:0;transform:scale(1.05);pointer-events:none}
+.LO-left{flex:1;background:var(--azul);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.LO-left::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(242,143,73,.1),transparent 70%);bottom:-100px;right:-100px}
+.LO-left::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(56,143,206,.08),transparent 70%);top:-80px;left:-80px}
+
+/* Animated wave lines */
+.wave-deco{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.wave-deco svg{position:absolute;width:140%;left:-20%;top:30%;opacity:.08}
+
+.LO-brand{position:relative;z-index:2;text-align:center}
+.LO-brand img{height:52px;filter:brightness(0) invert(1);margin-bottom:12px}
+.LO-brand p{font-family:'Playfair Display',serif;font-size:1rem;color:rgba(255,255,255,.2);font-style:italic;letter-spacing:1px}
+
+.LO-right{width:440px;background:var(--bg);display:flex;flex-direction:column;justify-content:center;padding:56px}
+.LO-right h2{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:500;margin-bottom:4px}
+.LO-right .sub{font-size:.82rem;color:var(--t3);margin-bottom:36px}
+.LO-field{margin-bottom:16px}
+.LO-field label{display:block;font-size:.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.LO-field input{width:100%;padding:12px 16px;border:1px solid var(--brd2);border-radius:10px;background:var(--surf);color:var(--t1);font-family:'Outfit',sans-serif;font-size:.92rem;outline:0;transition:all .2s}
+.LO-field input:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(56,143,206,.1)}
+.LO-btn{width:100%;padding:13px;background:var(--azul);color:#fff;border:0;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px}
+[data-theme="dark"] .LO-btn{background:var(--ciano)}
+.LO-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.LO-theme{position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:8px;border:1px solid var(--brd2);background:var(--surf);color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;transition:all .15s}
+.LO-theme:hover{border-color:var(--brd2);background:var(--surf2)}
+
+/* === ICON RAIL (thin sidebar) === */
+.rail{width:68px;background:var(--rail-bg);display:flex;flex-direction:column;align-items:center;padding:16px 0;flex-shrink:0;border-right:1px solid var(--rail-brd);position:relative;z-index:10}
+.rail-logo{margin-bottom:28px;padding:8px 0}
+.rail-logo img{height:16px;filter:brightness(0) invert(1)}
+.rail-items{flex:1;display:flex;flex-direction:column;gap:4px;width:100%;padding:0 10px}
+.ri{width:48px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;position:relative;color:rgba(255,255,255,.3);font-size:1.05rem;margin:0 auto}
+.ri:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.6)}
+.ri.on{background:rgba(56,143,206,.12);color:var(--ciano)}
+.ri .ri-tip{position:absolute;left:58px;background:var(--azul);color:#fff;padding:5px 12px;border-radius:6px;font-size:.72rem;font-weight:500;white-space:nowrap;opacity:0;pointer-events:none;transition:all .15s;transform:translateX(-4px);z-index:100}
+.ri:hover .ri-tip{opacity:1;transform:translateX(0)}
+.ri .ri-badge{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid var(--rail-bg)}
+.rail-bottom{padding:12px 0;display:flex;flex-direction:column;align-items:center;gap:8px}
+.rail-av{width:36px;height:36px;border-radius:10px;background:rgba(242,143,73,.15);display:flex;align-items:center;justify-content:center;color:var(--laranja);font-size:.7rem;font-weight:700}
+.rail-th{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:transparent;color:rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.75rem;transition:all .15s}
+.rail-th:hover{background:rgba(255,255,255,.05);color:#fff}
+
+/* === MAIN === */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Header bar */
+.hbar{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--brd);background:var(--surf);flex-shrink:0}
+.hbar-l{display:flex;align-items:center;gap:12px}
+.hbar-title{font-size:1.05rem;font-weight:600}
+.hbar-crumb{font-size:.75rem;color:var(--t3)}
+.hbar-r{display:flex;align-items:center;gap:8px}
+.hbar-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--brd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;transition:all .15s}
+.hbar-btn:hover{background:var(--surf2);color:var(--t1)}
+.hbar-btn.notif{position:relative}
+.hbar-btn.notif::after{content:'';position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--danger);border:2px solid var(--surf)}
+
+/* Content */
+.cnt{flex:1;overflow-y:auto;padding:28px 32px}
+
+/* === DASHBOARD === */
+.greet{margin-bottom:28px}
+.greet h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:500;letter-spacing:-.5px}
+.greet h1 span{color:var(--laranja)}
+.greet .meta{font-size:.78rem;color:var(--t3);margin-top:4px;display:flex;align-items:center;gap:6px}
+.live{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* KPI cards - horizontal with gradient accent */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:22px;position:relative;overflow:hidden;transition:all .2s;box-shadow:var(--sh)}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.kpi::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:14px 0 0 14px}
+.kpi:nth-child(1)::before{background:linear-gradient(180deg,var(--ciano),#2070A0)}
+.kpi:nth-child(2)::before{background:linear-gradient(180deg,var(--laranja),#D07030)}
+.kpi:nth-child(3)::before{background:linear-gradient(180deg,var(--ok),#2E8B60)}
+.kpi:nth-child(4)::before{background:linear-gradient(180deg,var(--danger),#B03030)}
+.kpi-lbl{font-size:.68rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.kpi-val{font-family:'Playfair Display',serif;font-size:1.9rem;line-height:1;margin-bottom:4px}
+.kpi-chg{font-size:.72rem;font-weight:500}
+.kpi-chg.u{color:var(--ok)}.kpi-chg.d{color:var(--danger)}
+
+/* Two col */
+.grid2{display:grid;grid-template-columns:5fr 3fr;gap:16px;margin-bottom:24px}
+.grid2eq{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+
+/* Card */
+.card{background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:22px;box-shadow:var(--sh);overflow:hidden}
+.card-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.card-h h3{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:500}
+.card-h a{font-size:.7rem;color:var(--ciano);font-weight:600;cursor:pointer;text-decoration:none}
+
+/* Chart */
+.bars{display:flex;align-items:flex-end;gap:6px;height:190px;padding-bottom:24px}
+.bar{flex:1;border-radius:6px 6px 0 0;transition:all .4s cubic-bezier(.16,1,.3,1);cursor:pointer;position:relative}
+.bar:hover{filter:brightness(1.15)}
+.bar::after{content:attr(data-l);position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--t3);white-space:nowrap}
+
+/* Activity */
+.act{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--brd);align-items:flex-start}
+.act:last-child{border:0}
+.act-d{width:8px;height:8px;border-radius:4px;margin-top:5px;flex-shrink:0}
+.act-t{font-size:.8rem;color:var(--t2);line-height:1.4}
+.act-t b{color:var(--t1);font-weight:600}
+.act-tm{font-size:.65rem;color:var(--t3);margin-top:1px}
+
+/* === TABLE === */
+.tw{background:var(--surf);border:1px solid var(--brd);border-radius:14px;overflow:hidden;box-shadow:var(--sh)}
+table{width:100%;border-collapse:collapse}
+th{padding:13px 18px;text-align:left;font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);background:var(--surf2);border-bottom:1px solid var(--brd)}
+td{padding:12px 18px;font-size:.84rem;border-bottom:1px solid var(--brd);color:var(--t2)}
+tr:last-child td{border:0}
+tr:hover td{background:var(--surf2)}
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:.66rem;font-weight:600;letter-spacing:.3px}
+.b-ok{background:rgba(76,175,130,.1);color:var(--ok)}
+.b-w{background:rgba(229,161,0,.1);color:var(--warn)}
+.b-d{background:rgba(224,85,85,.1);color:var(--danger)}
+.b-i{background:rgba(56,143,206,.1);color:var(--ciano)}
+
+/* Filters */
+.fbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.fin{padding:9px 14px;border:1px solid var(--brd2);border-radius:10px;background:var(--surf);color:var(--t1);font-family:'Outfit',sans-serif;font-size:.82rem;outline:0;transition:all .2s}
+.fin:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(56,143,206,.08)}
+select.fin{cursor:pointer}
+.btn{padding:9px 20px;background:var(--azul);color:#fff;border:0;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s}
+[data-theme="dark"] .btn{background:var(--ciano)}
+.btn:hover{transform:translateY(-1px)}
+
+/* Page header */
+.ph{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px}
+.ph h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:500}
+.ph .psub{font-size:.78rem;color:var(--t3);margin-top:2px}
+
+/* === ALERTS === */
+.alr{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--surf);border:1px solid var(--brd);border-radius:12px;margin-bottom:8px;box-shadow:var(--sh);cursor:pointer;transition:all .15s}
+.alr:hover{box-shadow:var(--sh2);transform:translateX(2px)}
+.alr-s{width:6px;height:32px;border-radius:3px;flex-shrink:0}
+.alr-s.c{background:var(--danger)}.alr-s.w{background:var(--warn)}.alr-s.i{background:var(--ciano)}
+.alr-b{flex:1}
+.alr-b h4{font-size:.86rem;font-weight:600;margin-bottom:2px}
+.alr-b p{font-size:.74rem;color:var(--t3)}
+.alr-m{text-align:right;flex-shrink:0}
+.alr-m .po{font-size:.72rem;font-weight:600;color:var(--ciano)}
+.alr-m .tm{font-size:.64rem;color:var(--t3)}
+
+/* === CADASTRO === */
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.cc{background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:24px;box-shadow:var(--sh);transition:all .2s;cursor:pointer;position:relative;overflow:hidden}
+.cc:hover{box-shadow:var(--sh2);transform:translateY(-3px)}
+.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.cc:nth-child(1)::before{background:linear-gradient(90deg,var(--ciano),#60AADD)}
+.cc:nth-child(2)::before{background:linear-gradient(90deg,var(--laranja),#F5A86A)}
+.cc:nth-child(3)::before{background:linear-gradient(90deg,var(--ok),#6EC9A0)}
+.cc h4{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:500;margin-bottom:4px}
+.cc p{font-size:.74rem;color:var(--t3);line-height:1.4}
+.cc .num{margin-top:14px;font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--laranja)}
+.cc .num span{font-family:'Outfit',sans-serif;font-size:.65rem;color:var(--t3)}
+
+/* === GAUGE === */
+.gg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.gc{background:var(--surf);border:1px solid var(--brd);border-radius:14px;padding:24px;text-align:center;box-shadow:var(--sh)}
+.gr{width:100px;height:100px;margin:0 auto 12px;position:relative}
+.gr svg{transform:rotate(-90deg)}
+.gr circle{fill:none;stroke-width:7;stroke-linecap:round}
+.gbg{stroke:var(--brd)}
+.gf{transition:stroke-dashoffset 1.2s cubic-bezier(.16,1,.3,1)}
+.gv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.4rem}
+.gl{font-size:.82rem;font-weight:600;margin-bottom:2px}
+.gs{font-size:.64rem;color:var(--t3)}
+
+/* Pages */
+.pg{display:none}.pg.on{display:block}
+
+/* Anims */
+@keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.an{animation:fi .45s cubic-bezier(.16,1,.3,1) both}
+.d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}.d5{animation-delay:.2s}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- LOGIN -->
+<div class="LO" id="LO">
+  <div class="LO-left">
+    <div class="wave-deco">
+      <svg viewBox="0 0 1000 200" preserveAspectRatio="none">
+        <path d="M0 100 Q250 30 500 100 Q750 170 1000 80" stroke="rgba(56,143,206,.6)" stroke-width="1" fill="none"/>
+        <path d="M0 120 Q250 50 500 120 Q750 190 1000 100" stroke="rgba(242,143,73,.4)" stroke-width=".8" fill="none"/>
+        <path d="M0 80 Q300 20 600 90 Q850 150 1000 60" stroke="rgba(204,195,184,.3)" stroke-width="1.5" fill="none"/>
+      </svg>
+    </div>
+    <div class="LO-brand">
+      <img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="TOHM">
+      <p>Human-powered sound</p>
+    </div>
+  </div>
+  <div class="LO-right">
+    <button class="LO-theme" onclick="th()" id="tb">🌙</button>
+    <h2>Bem-vindo</h2>
+    <p class="sub">Acesse o Tohm Analytics</p>
+    <div class="LO-field"><label>E-mail</label><input type="email" value="david@tohm.com.br"></div>
+    <div class="LO-field"><label>Senha</label><input type="password" value="••••••••"></div>
+    <button class="LO-btn" onclick="login()">Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="rail">
+  <div class="rail-logo"><img src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T"></div>
+  <div class="rail-items">
+    <div class="ri on" onclick="go('dash',this)">📊<span class="ri-tip">Dashboard</span></div>
+    <div class="ri" onclick="go('ped',this)">📦<span class="ri-tip">Pedidos</span></div>
+    <div class="ri" onclick="go('al',this)">🔔<span class="ri-tip">Alertas</span><span class="ri-badge"></span></div>
+    <div class="ri" onclick="go('cad',this)">📋<span class="ri-tip">Cadastros</span></div>
+    <div class="ri" onclick="go('fab',this)">⚙️<span class="ri-tip">Produção</span></div>
+    <div class="ri" onclick="go('ped',this)">🚢<span class="ri-tip">Shipments</span></div>
+    <div class="ri" onclick="go('ped',this)">💰<span class="ri-tip">Financeiro</span></div>
+    <div class="ri" onclick="go('ped',this)">📈<span class="ri-tip">Forecast</span></div>
+    <div class="ri" onclick="go('dash',this)">❤️<span class="ri-tip">Health</span></div>
+  </div>
+  <div class="rail-bottom">
+    <button class="rail-th" onclick="th()" id="tb2">🌙</button>
+    <div class="rail-av">DH</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="hbar">
+    <div class="hbar-l"><span class="hbar-title" id="ht">Dashboard</span><span class="hbar-crumb" id="hc">Visão geral</span></div>
+    <div class="hbar-r"><button class="hbar-btn">🔍</button><button class="hbar-btn notif">🔔</button></div>
+  </div>
+  <div class="cnt">
+
+    <!-- DASHBOARD -->
+    <div class="pg on" id="p-dash">
+      <div class="greet an"><h1>Bom dia, <span>David</span></h1><div class="meta"><div class="live"></div>Atualizado há 12 min — 15 Mar 2026</div></div>
+      <div class="kpi-row">
+        <div class="kpi an d1"><div class="kpi-lbl">Faturamento Mar</div><div class="kpi-val" style="color:var(--ciano)">R$ 2.4M</div><div class="kpi-chg u">▲ 12% vs Fev</div></div>
+        <div class="kpi an d2"><div class="kpi-lbl">POs em Aberto</div><div class="kpi-val" style="color:var(--laranja)">38</div><div class="kpi-chg">+5 esta semana</div></div>
+        <div class="kpi an d3"><div class="kpi-lbl">Taxa de Entrega</div><div class="kpi-val" style="color:var(--ok)">94%</div><div class="kpi-chg u">▲ 3% vs anterior</div></div>
+        <div class="kpi an d4"><div class="kpi-lbl">Alertas Ativos</div><div class="kpi-val" style="color:var(--danger)">4</div><div class="kpi-chg d">2 críticos</div></div>
+      </div>
+      <div class="grid2">
+        <div class="card an d3"><div class="card-h"><h3>Faturamento Mensal</h3><a>Ver detalhes →</a></div><div class="bars" id="ch1"></div></div>
+        <div class="card an d4"><div class="card-h"><h3>Atividade Recente</h3><a>Ver tudo →</a></div>
+          <div class="act"><div class="act-d" style="background:var(--danger)"></div><div><div class="act-t"><b>Alerta:</b> NF-42891 faturada sem embarque</div><div class="act-tm">há 23 min</div></div></div>
+          <div class="act"><div class="act-d" style="background:var(--ciano)"></div><div><div class="act-t"><b>PO-0387</b> → SHIPPED</div><div class="act-tm">há 1h</div></div></div>
+          <div class="act"><div class="act-d" style="background:var(--ok)"></div><div><div class="act-t"><b>Sync</b> — 847 registros atualizados</div><div class="act-tm">há 1h</div></div></div>
+          <div class="act"><div class="act-d" style="background:var(--laranja)"></div><div><div class="act-t"><b>Pagamento</b> PO-0352 registrado</div><div class="act-tm">há 3h</div></div></div>
+          <div class="act"><div class="act-d" style="background:var(--ciano)"></div><div><div class="act-t"><b>PO-0391</b> → INVOICED</div><div class="act-tm">há 4h</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEDIDOS -->
+    <div class="pg" id="p-ped">
+      <div class="ph an"><div><h2>Pedidos</h2><div class="psub">Acompanhamento comercial de POs</div></div><button class="btn">+ Novo Registro</button></div>
+      <div class="fbar an d1">
+        <input class="fin" placeholder="Buscar PO, cliente..." style="min-width:220px">
+        <select class="fin"><option>Todos os status</option><option>PO_RECEIVED</option><option>IN_PRODUCTION</option><option>SHIPPED</option></select>
+        <select class="fin"><option>Todas as divisões</option></select>
+        <select class="fin"><option>Mar 2026</option><option>Fev 2026</option></select>
+      </div>
+      <div class="tw an d2">
+        <table>
+          <thead><tr><th>PO</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Status</th><th>Embarque</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600;color:var(--t1)">PO-2024-0391</td><td>Harman International</td><td>TWS-200 Pro</td><td>12.000</td><td><span class="badge b-i">INVOICED</span></td><td>18/03/2026</td><td style="font-weight:600">US$ 84,000</td></tr>
+            <tr><td style="font-weight:600;color:var(--t1)">PO-2024-0390</td><td>JBL Professional</td><td>BT-Speaker MK3</td><td>8.500</td><td><span class="badge b-ok">SHIPPED</span></td><td>12/03/2026</td><td style="font-weight:600">US$ 127,500</td></tr>
+            <tr><td style="font-weight:600;color:var(--t1)">PO-2024-0389</td><td>Samsung Electronics</td><td>Soundbar SB-400</td><td>5.200</td><td><span class="badge b-w">IN_PRODUCTION</span></td><td>25/03/2026</td><td style="font-weight:600">US$ 312,000</td></tr>
+            <tr><td style="font-weight:600;color:var(--t1)">PO-2024-0388</td><td>Bose Corporation</td><td>Driver Unit D-50</td><td>20.000</td><td><span class="badge b-d">ALERT</span></td><td>—</td><td style="font-weight:600">US$ 60,000</td></tr>
+            <tr><td style="font-weight:600;color:var(--t1)">PO-2024-0387</td><td>Sonos Inc</td><td>TWS-100</td><td>15.000</td><td><span class="badge b-ok">DELIVERED</span></td><td>05/03/2026</td><td style="font-weight:600">US$ 90,000</td></tr>
+            <tr><td style="font-weight:600;color:var(--t1)">PO-2024-0386</td><td>Harman International</td><td>Subwoofer SW-12</td><td>3.000</td><td><span class="badge b-i">NF_ISSUED</span></td><td>20/03/2026</td><td style="font-weight:600">US$ 210,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ALERTAS -->
+    <div class="pg" id="p-al">
+      <div class="ph an"><div><h2>Alertas</h2><div class="psub" style="display:flex;align-items:center;gap:6px"><div class="live"></div>4 alertas ativos</div></div></div>
+      <div class="an d1"><div class="alr"><div class="alr-s c"></div><div class="alr-b"><h4>Faturado sem embarque registrado</h4><p>NF-42891 emitida há 5 dias sem registro de embarque</p></div><div class="alr-m"><div class="po">PO-2024-0388</div><div class="tm">há 23 min</div></div></div></div>
+      <div class="an d2"><div class="alr"><div class="alr-s c"></div><div class="alr-b"><h4>Faturamento não debitou estoque</h4><p>NF-42885 processada mas estoque TWS-200 não descontado</p></div><div class="alr-m"><div class="po">PO-2024-0385</div><div class="tm">há 2h</div></div></div></div>
+      <div class="an d3"><div class="alr"><div class="alr-s w"></div><div class="alr-b"><h4>PO divergente no Drummer</h4><p>Qty no Drummer (4.800) difere do Protheus (5.200)</p></div><div class="alr-m"><div class="po">PO-2024-0389</div><div class="tm">há 4h</div></div></div></div>
+      <div class="an d4"><div class="alr"><div class="alr-s w"></div><div class="alr-b"><h4>PO sem informação de pagamento</h4><p>Entregue há 32 dias sem registro de pagamento</p></div><div class="alr-m"><div class="po">PO-2024-0371</div><div class="tm">há 6h</div></div></div></div>
+      <div class="an d5"><div class="alr" style="opacity:.4"><div class="alr-s i"></div><div class="alr-b"><h4 style="text-decoration:line-through">Divergência de quantidades resolvida</h4><p>Entrada vs saída Driver Unit D-50 — corrigido</p></div><div class="alr-m"><div class="po">PO-2024-0380</div><div class="tm">ontem</div></div></div></div>
+    </div>
+
+    <!-- CADASTROS -->
+    <div class="pg" id="p-cad">
+      <div class="ph an"><div><h2>Cadastro Geral</h2><div class="psub">Base centralizada — clientes, produtos, divisões</div></div></div>
+      <div class="cg">
+        <div class="cc an d1"><h4>Clientes</h4><p>Cadastro unificado com vínculo ao Protheus</p><div class="num">124 <span>registros</span></div></div>
+        <div class="cc an d2"><h4>Produtos</h4><p>Famílias, categorias e SKUs no banco</p><div class="num">867 <span>registros</span></div></div>
+        <div class="cc an d3"><h4>Divisões</h4><p>Segmentação comercial de clientes</p><div class="num">12 <span>divisões</span></div></div>
+      </div>
+      <div class="card an d4">
+        <div class="card-h"><h3>Estruturas de Produto</h3><button class="btn" style="font-size:.72rem;padding:7px 14px">+ Nova Estrutura</button></div>
+        <div class="tw" style="border:0;box-shadow:none;border-radius:0">
+          <table>
+            <thead><tr><th>Código</th><th>Produto</th><th>Família</th><th>Componentes</th><th>Atualização</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:600;color:var(--t1)">EST-001</td><td>TWS-200 Pro</td><td>True Wireless</td><td>24 itens</td><td>14/03/2026</td><td><span class="badge b-ok">Ativa</span></td></tr>
+              <tr><td style="font-weight:600;color:var(--t1)">EST-002</td><td>BT-Speaker MK3</td><td>Bluetooth Speaker</td><td>31 itens</td><td>12/03/2026</td><td><span class="badge b-ok">Ativa</span></td></tr>
+              <tr><td style="font-weight:600;color:var(--t1)">EST-003</td><td>Soundbar SB-400</td><td>Soundbar</td><td>42 itens</td><td>10/03/2026</td><td><span class="badge b-w">Em revisão</span></td></tr>
+              <tr><td style="font-weight:600;color:var(--t1)">EST-004</td><td>Subwoofer SW-12</td><td>Subwoofer</td><td>18 itens</td><td>08/03/2026</td><td><span class="badge b-ok">Ativa</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUÇÃO -->
+    <div class="pg" id="p-fab">
+      <div class="ph an"><div><h2>KPIs Fabris</h2><div class="psub" style="display:flex;align-items:center;gap:6px"><div class="live"></div>Indicadores em tempo real</div></div>
+        <div style="display:flex;gap:8px"><select class="fin"><option>Hoje</option><option>Esta semana</option></select><select class="fin"><option>Todas as linhas</option></select></div>
+      </div>
+      <div class="gg">
+        <div class="gc an d1"><div class="gr"><svg width="100" height="100" viewBox="0 0 100 100"><circle class="gbg" cx="50" cy="50" r="42"/><circle class="gf" cx="50" cy="50" r="42" stroke="var(--ok)" stroke-dasharray="264" stroke-dashoffset="32"/></svg><div class="gv" style="color:var(--ok)">88%</div></div><div class="gl">OEE Geral</div><div class="gs">Meta: 85%</div></div>
+        <div class="gc an d2"><div class="gr"><svg width="100" height="100" viewBox="0 0 100 100"><circle class="gbg" cx="50" cy="50" r="42"/><circle class="gf" cx="50" cy="50" r="42" stroke="var(--ciano)" stroke-dasharray="264" stroke-dashoffset="53"/></svg><div class="gv" style="color:var(--ciano)">80%</div></div><div class="gl">Disponibilidade</div><div class="gs">Paradas: 2h10min</div></div>
+        <div class="gc an d3"><div class="gr"><svg width="100" height="100" viewBox="0 0 100 100"><circle class="gbg" cx="50" cy="50" r="42"/><circle class="gf" cx="50" cy="50" r="42" stroke="var(--laranja)" stroke-dasharray="264" stroke-dashoffset="13"/></svg><div class="gv" style="color:var(--laranja)">95%</div></div><div class="gl">Qualidade</div><div class="gs">Rejeitos: 312 un</div></div>
+      </div>
+      <div class="grid2eq">
+        <div class="card an d4"><div class="card-h"><h3>Produção por Linha</h3></div><div class="bars" id="ch2" style="height:150px"></div></div>
+        <div class="card an d5"><div class="card-h"><h3>OPs em Andamento</h3></div>
+          <div class="act"><div class="act-d" style="background:var(--ok)"></div><div><div class="act-t"><b>OP-4521</b> TWS-200 Pro — Linha 1</div><div class="act-tm">72% · ETA 16:30</div></div></div>
+          <div class="act"><div class="act-d" style="background:var(--ciano)"></div><div><div class="act-t"><b>OP-4522</b> BT-Speaker MK3 — Linha 2</div><div class="act-tm">45% · ETA amanhã</div></div></div>
+          <div class="act"><div class="act-d" style="background:var(--laranja)"></div><div><div class="act-t"><b>OP-4523</b> Soundbar SB-400 — Linha 3</div><div class="act-tm">12% · ETA 20/03</div></div></div>
+          <div class="act"><div class="act-d" style="background:var(--t3)"></div><div><div class="act-t"><b>OP-4524</b> Subwoofer SW-12 — Aguardando</div><div class="act-tm">Fila · Início 18/03</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function login(){document.getElementById('LO').classList.add('off');setTimeout(()=>charts(),400)}
+function th(){const b=document.body,n=b.dataset.theme==='light'?'dark':'light';b.dataset.theme=n;const i=n==='dark'?'🌙':'☀️';document.getElementById('tb').textContent=i;document.getElementById('tb2').textContent=i}
+function go(id,el){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  document.querySelectorAll('.ri').forEach(r=>r.classList.remove('on'));
+  if(el)el.classList.add('on');
+  const t={dash:['Dashboard','Visão geral'],ped:['Pedidos','Comercial'],al:['Alertas','Monitoramento'],cad:['Cadastros','Base de dados'],fab:['KPIs Fabris','Produção']};
+  const v=t[id]||['',''];
+  document.getElementById('ht').textContent=v[0];
+  document.getElementById('hc').textContent=v[1];
+  document.getElementById('p-'+id).querySelectorAll('.an').forEach(e=>{e.style.animation='none';e.offsetHeight;e.style.animation=''});
+}
+function charts(){
+  const c1=document.getElementById('ch1');
+  const d=[65,72,85,0,0,0,0,0,0,0,0,0];
+  const m=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  c1.innerHTML='';
+  d.forEach((v,i)=>{const b=document.createElement('div');b.className='bar';b.style.height=(v>0?v/100*165:3)+'px';b.style.background=i<3?'var(--ciano)':'var(--brd)';b.style.opacity=i<3?'1':'.2';b.dataset.l=m[i];c1.appendChild(b)});
+  const c2=document.getElementById('ch2');
+  if(c2){c2.innerHTML='';[{v:78,c:'var(--ciano)',l:'L1'},{v:62,c:'var(--laranja)',l:'L2'},{v:45,c:'var(--ok)',l:'L3'}].forEach(x=>{const w=document.createElement('div');w.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;gap:6px';const b=document.createElement('div');b.className='bar';b.style.height=x.v/100*120+'px';b.style.width='100%';b.style.maxWidth='45px';b.style.background=x.c;const l=document.createElement('div');l.style.cssText='font-size:.6rem;color:var(--t3)';l.textContent=x.l;w.appendChild(b);w.appendChild(l);c2.appendChild(w)})}
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+</script>
+</body>
+</html>
