@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>TOHM Analytics</title>
+<script>(function(){var s=localStorage.getItem('ta7');if(s)document.addEventListener('DOMContentLoaded',function(){document.body.setAttribute('data-theme',s)})})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0C0E14;--bg2:#13151E;--bg3:#191C28;--bg4:#1F2233;--bg5:#262A3A;
+  --brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.07);--brd3:rgba(255,255,255,.12);
+  --t1:#EDEAE4;--t2:#8B90A0;--t3:#4D5264;--t4:#363A4A;
+  --accent:#E8930C;--accent2:#F5A623;--a-soft:rgba(232,147,12,.06);--a-med:rgba(232,147,12,.14);--a-str:rgba(232,147,12,.24);
+  --ok:#34D399;--warn:#FBBF24;--err:#F87171;--info:#60A5FA;
+  --font:'Instrument Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+  --r1:8px;--r2:12px;--r3:16px;
+  --ease:cubic-bezier(.22,1,.36,1);--ease-apple:cubic-bezier(.4,0,.2,1);--ease-bounce:cubic-bezier(.34,1.56,.64,1);
+  --t-fast:.15s var(--ease-apple);--t-med:.25s var(--ease-apple);--t-smooth:.4s var(--ease);
+}
+[data-theme="light"]{
+  --bg:#F4F2ED;--bg2:#FFFFFF;--bg3:#EDE9E2;--bg4:#E5E1D9;--bg5:#DBD7CE;
+  --brd:rgba(0,0,0,.04);--brd2:rgba(0,0,0,.07);--brd3:rgba(0,0,0,.12);
+  --t1:#1A1814;--t2:#6B665C;--t3:#A09A8E;--t4:#C5C0B6;
+  --accent:#C47A0A;--accent2:#B06C00;--a-soft:rgba(196,122,10,.05);--a-med:rgba(196,122,10,.10);--a-str:rgba(196,122,10,.18);
+  --ok:#16874A;--err:#C93B3B;--info:#2B6FC2;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd3);border-radius:2px}
+
+/* ═══ LOGIN ═══ */
+.LO{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .8s var(--ease),transform .8s var(--ease),filter .8s var(--ease)}
+.LO.out{opacity:0;transform:scale(1.04);filter:blur(8px);pointer-events:none}
+.LO-orbs{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:oF 22s infinite}
+.o1{width:400px;height:400px;background:rgba(232,147,12,.05);top:-10%;left:-6%}.o2{width:300px;height:300px;background:rgba(56,143,206,.03);bottom:-10%;right:-6%;animation-delay:-8s}.o3{width:180px;height:180px;background:rgba(232,147,12,.02);top:40%;left:55%;animation-delay:-15s}
+@keyframes oF{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(35px,-25px) scale(1.05)}66%{transform:translate(-25px,35px) scale(.95)}}
+.LO-c{position:relative;z-index:2;width:370px;text-align:center;animation:lIn .9s var(--ease) both}
+@keyframes lIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.LO-logo{height:32px;margin-bottom:5px;opacity:.85}
+[data-theme="dark"] .LO-logo,[data-theme="dark"] .tb-img{filter:brightness(0) invert(1)}
+.LO-sub{font-family:var(--mono);font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--t3);margin-bottom:40px}
+.LF{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--brd2);border-radius:var(--r3);padding:28px;text-align:left}
+.LF-t{font-size:1rem;font-weight:600;margin-bottom:3px}.LF-d{font-size:.74rem;color:var(--t3);margin-bottom:22px}
+.LF-g{margin-bottom:12px}.LF-g label{display:block;font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.LF-g input{width:100%;padding:9px 12px;border:1px solid var(--brd2);border-radius:var(--r1);background:var(--bg);color:var(--t1);font-family:var(--font);font-size:.84rem;outline:0;transition:border .2s,box-shadow .2s}
+.LF-g input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a-soft)}
+.LF-g input::placeholder{color:var(--t4)}
+.LF-b{width:100%;padding:10px;background:var(--accent);color:#fff;border:0;border-radius:var(--r1);font-family:var(--font);font-size:.84rem;font-weight:600;cursor:pointer;transition:all .25s var(--ease-apple);margin-top:4px;box-shadow:0 2px 12px var(--a-med)}
+.LF-b:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 24px var(--a-str)}
+.LF-b:active{transform:translateY(0) scale(.98);box-shadow:0 2px 8px var(--a-med);transition-duration:.08s}
+.LO-ft{margin-top:16px;font-size:.62rem;color:var(--t4)}
+
+/* ═══ APP SHELL ═══ */
+.APP{display:none;height:100vh;flex-direction:column}
+.APP.on{display:flex}
+
+/* Topbar */
+.tb{height:44px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid var(--brd);backdrop-filter:blur(20px);background:rgba(12,14,20,.6);flex-shrink:0;z-index:10;position:relative}
+[data-theme="light"] .tb{background:rgba(244,242,237,.65)}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-img{height:13px;opacity:.7}
+.tb-div{width:1px;height:14px;background:var(--brd2)}
+.tb-app{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.tb-r{margin-left:auto;display:flex;align-items:center;gap:12px}
+.tb-clk{font-family:var(--mono);font-size:.68rem;color:var(--t3)}
+.tb-th{width:30px;height:30px;border-radius:50%;border:1px solid var(--brd2);background:transparent;color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.72rem;transition:all .25s var(--ease-apple);position:relative;overflow:hidden}
+.tb-th:hover{border-color:var(--accent);color:var(--accent);background:var(--a-soft);transform:scale(1.08)}
+.tb-th svg{position:absolute;transition:transform .4s var(--ease),opacity .25s ease}
+.tb-th .ic-sun{transform:rotate(0deg) scale(1);opacity:1}
+.tb-th .ic-moon{transform:rotate(-90deg) scale(.5);opacity:0}
+[data-theme="light"] .tb-th .ic-sun{transform:rotate(90deg) scale(.5);opacity:0}
+[data-theme="light"] .tb-th .ic-moon{transform:rotate(0deg) scale(1);opacity:1}
+.tb-u{display:flex;align-items:center;gap:6px}
+.tb-av{width:26px;height:26px;border-radius:50%;background:var(--a-med);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:var(--accent)}
+.tb-un{font-size:.72rem;color:var(--t2)}
+
+/* ═══ 3-COLUMN WORKSPACE ═══ */
+.WS{flex:1;display:flex;overflow:hidden;position:relative}
+
+/* LEFT: Modules */
+.WS-left{width:280px;border-right:1px solid var(--brd);display:flex;flex-direction:column;flex-shrink:0;background:var(--bg2)}
+.WS-left-head{padding:16px 16px 12px;flex-shrink:0}
+.WS-left-greet{font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.WS-left-title{font-size:.95rem;font-weight:600;line-height:1.3}
+.WS-left-title strong{font-weight:700}
+.WS-left-sec{padding:0 16px;font-family:var(--mono);font-size:.52rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t4);margin-bottom:8px;margin-top:4px}
+.WS-left-list{flex:1;overflow-y:auto;padding:0 8px 16px}
+
+.mod{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:var(--r1);cursor:pointer;text-decoration:none;color:inherit;transition:all var(--t-med);position:relative;margin-bottom:2px;border:1px solid transparent}
+.mod:hover{background:var(--bg4);border-color:var(--brd2);transform:translateX(2px)}
+.mod:active{transform:translateX(2px) scale(.98);transition-duration:.08s}
+.mod::before{content:'';position:absolute;left:0;top:25%;bottom:25%;width:2px;border-radius:1px;background:transparent;transition:all .2s}
+.mod:hover::before{background:var(--accent)}
+.mod-icon{width:34px;height:34px;border-radius:9px;background:var(--bg3);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;transition:all var(--t-med)}
+.mod:hover .mod-icon{background:var(--a-str);border-color:var(--a-med)}
+.mod-body{flex:1;min-width:0}
+.mod-body h3{font-size:.78rem;font-weight:600;margin-bottom:1px;transition:color .15s}
+.mod:hover .mod-body h3{color:var(--accent)}
+.mod-body p{font-size:.62rem;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mod-arr{font-size:.7rem;color:var(--accent);opacity:0;transition:all .2s;flex-shrink:0}
+.mod:hover .mod-arr{opacity:1}
+
+/* CENTER: Activity Feed */
+.WS-center{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.WS-center-head{padding:12px 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--bg)}
+.WS-center-head h2{font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:8px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pls 2s infinite}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.3}}
+.WS-center-head .filters{display:flex;gap:4px}
+.fbtn{padding:4px 10px;border-radius:999px;border:1px solid var(--brd);background:transparent;color:var(--t3);font-family:var(--font);font-size:.65rem;font-weight:500;cursor:pointer;transition:all .15s}
+.fbtn:hover{border-color:var(--brd3);color:var(--t2);background:var(--bg3)}
+.fbtn.on{border-color:var(--accent);color:var(--accent);background:var(--a-soft)}
+
+.feed{flex:1;overflow-y:auto;padding:0}
+.feed-date{padding:6px 20px;font-family:var(--mono);font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t4);background:var(--bg3);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:1}
+.fe{display:flex;gap:12px;padding:11px 20px;border-bottom:1px solid var(--brd);transition:all var(--t-fast);cursor:default}
+.fe:hover{background:var(--bg2);padding-left:24px}
+.fe-dot{width:7px;height:7px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.fe-dot.ok{background:var(--ok)}.fe-dot.err{background:var(--err)}.fe-dot.warn{background:var(--warn)}.fe-dot.info{background:var(--info)}.fe-dot.sys{background:var(--t4)}
+.fe-body{flex:1;min-width:0}
+.fe-t{font-size:.76rem;line-height:1.4;color:var(--t2)}
+.fe-t strong{color:var(--t1);font-weight:600}
+.fe-tm{font-size:.58rem;color:var(--t4);margin-top:2px}
+.fe-tags{display:flex;gap:3px;margin-top:4px}
+.fe-tag{padding:1px 6px;border-radius:3px;font-size:.52rem;font-weight:600;background:var(--bg4);color:var(--t3)}
+.fe-tag.cr{background:rgba(248,113,113,.1);color:var(--err)}.fe-tag.wr{background:rgba(251,191,36,.1);color:var(--warn)}
+
+/* RIGHT: TIA */
+.WS-right{width:320px;border-left:1px solid var(--brd);display:flex;flex-direction:column;flex-shrink:0;background:var(--bg2)}
+.WS-right.collapsed{width:44px}
+.WS-right.collapsed .tia-full{display:none}
+.WS-right.collapsed .tia-mini{display:flex}
+
+.tia-mini{display:none;flex-direction:column;align-items:center;padding-top:14px;gap:8px}
+.tia-mini-btn{width:32px;height:32px;border-radius:50%;background:var(--accent);border:0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;transition:all .25s var(--ease-apple);box-shadow:0 2px 10px var(--a-med)}
+.tia-mini-btn:hover{transform:scale(1.12);box-shadow:0 6px 20px var(--a-str)}
+.tia-mini-btn:active{transform:scale(.95);transition-duration:.08s}
+.tia-mini-label{writing-mode:vertical-rl;font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t4);cursor:pointer}
+
+.tia-full{display:flex;flex-direction:column;height:100%}
+.tia-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--brd);flex-shrink:0;background:var(--bg3)}
+.tia-av{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#fff;flex-shrink:0}
+.tia-nfo{flex:1}
+.tia-nfo h3{font-family:var(--mono);font-size:.75rem;font-weight:700;letter-spacing:.05em}
+.tia-nfo .st{display:flex;align-items:center;gap:4px;font-size:.6rem;color:var(--ok)}
+.tia-nfo .st::before{content:'';width:4px;height:4px;background:var(--ok);border-radius:50%;animation:pls 2s infinite}
+.tia-collapse{width:24px;height:24px;border-radius:6px;border:1px solid var(--brd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.65rem;transition:all var(--t-fast)}
+.tia-collapse:hover{background:var(--bg4);color:var(--t1);transform:scale(1.05)}
+
+.tia-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.tm{max-width:90%;padding:10px 13px;font-size:.76rem;line-height:1.5;border-radius:12px;animation:mIn .2s var(--ease) both}
+@keyframes mIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.tm.bot{align-self:flex-start;background:var(--bg3);border:1px solid var(--brd);border-radius:12px 12px 12px 3px}
+.tm.bot strong{color:var(--accent)}
+.tm.user{align-self:flex-end;background:var(--accent);color:#fff;border-radius:12px 12px 3px 12px;font-weight:500}
+
+.tia-inp{padding:10px 12px;border-top:1px solid var(--brd);background:var(--bg3);flex-shrink:0}
+.tia-inp-row{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--brd);border-radius:999px;padding:4px 4px 4px 12px;transition:border .2s,box-shadow .2s}
+.tia-inp-row:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--a-soft)}
+.tia-f{flex:1;border:0;background:transparent;color:var(--t1);font-family:var(--font);font-size:.76rem;outline:0;resize:none;min-height:20px;max-height:60px}
+.tia-f::placeholder{color:var(--t4)}
+.tia-s{width:26px;height:26px;border-radius:50%;background:var(--accent);border:0;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.75rem;flex-shrink:0;transition:all .2s var(--ease-apple)}
+.tia-s:hover{background:var(--accent2);transform:scale(1.08)}
+.tia-s:active{transform:scale(.92);transition-duration:.06s}
+.tia-hint{padding:8px 14px 0;font-size:.55rem;color:var(--t4);text-align:center}
+
+/* STATUS BAR */
+.sbar{height:28px;border-top:1px solid var(--brd);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0;z-index:5}
+.sbar-item{display:flex;align-items:center;gap:5px;font-size:.58rem;color:var(--t3)}
+.sbar-item .sd{width:4px;height:4px;border-radius:50%}
+.sbar-item .sd.ok{background:var(--ok)}.sbar-item .sd.err{background:var(--err)}
+.sbar-r{margin-left:auto;font-family:var(--mono);font-size:.55rem;color:var(--t4)}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.WS-right{width:260px}}
+@media(max-width:900px){.WS-right{display:none}.WS-left{width:240px}}
+@media(max-width:650px){.WS-left{display:none}}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- LOGIN -->
+<div class="LO" id="LO">
+  <div class="LO-orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+  <div class="LO-c">
+    <img class="LO-logo" src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="TOHM">
+    <div class="LO-sub">Analytics Platform</div>
+    <form class="LF" onsubmit="doLogin(event)">
+      <div class="LF-t">Entrar</div>
+      <div class="LF-d">Acesse com suas credenciais corporativas</div>
+      <div class="LF-g"><label>E-mail</label><input type="email" placeholder="seu@tohm.com.br" value="david@tohm.com.br" autofocus></div>
+      <div class="LF-g"><label>Senha</label><input type="password" placeholder="••••••••" value="12345678"></div>
+      <button class="LF-b" type="submit">Entrar</button>
+    </form>
+    <div class="LO-ft">TOHM © 2026 · Human-powered sound</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="APP" id="APP">
+  <header class="tb">
+    <div class="tb-l">
+      <img class="tb-img" src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T">
+      <div class="tb-div"></div>
+      <span class="tb-app">Analytics</span>
+    </div>
+    <div class="tb-r">
+      <span class="tb-clk" id="clock"></span>
+      <button class="tb-th" onclick="th()" id="thBtn" title="Tema">
+        <svg class="ic-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="ic-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <div class="tb-u"><span class="tb-un">David Hassun</span><div class="tb-av">DH</div></div>
+    </div>
+  </header>
+
+  <div class="WS">
+    <!-- LEFT: Modules -->
+    <div class="WS-left">
+      <div class="WS-left-head">
+        <div class="WS-left-greet" id="greetLabel">Bom dia</div>
+        <div class="WS-left-title">O que vamos resolver <strong>hoje</strong>?</div>
+      </div>
+      <div class="WS-left-sec">Módulos</div>
+      <div class="WS-left-list">
+        <a href="comercial.html" class="mod"><div class="mod-icon">📦</div><div class="mod-body"><h3>Comercial</h3><p>Pedidos, embarques, forecast</p></div><span class="mod-arr">→</span></a>
+        <a href="producao.html" class="mod"><div class="mod-icon">🏭</div><div class="mod-body"><h3>Produção</h3><p>Apontamentos, OPs, OEE</p></div><span class="mod-arr">→</span></a>
+        <a href="financeiro.html" class="mod"><div class="mod-icon">💰</div><div class="mod-body"><h3>Financeiro</h3><p>Pagamentos, recebíveis, fluxo</p></div><span class="mod-arr">→</span></a>
+        <a href="qualidade.html" class="mod"><div class="mod-icon">✅</div><div class="mod-body"><h3>Qualidade</h3><p>Inspeções, NCs, CAPA</p></div><span class="mod-arr">→</span></a>
+        <a href="engenharia.html" class="mod"><div class="mod-icon">📐</div><div class="mod-body"><h3>Engenharia</h3><p>Estruturas, BOM, alterações</p></div><span class="mod-arr">→</span></a>
+        <a href="sistema.html" class="mod"><div class="mod-icon">🖥️</div><div class="mod-body"><h3>TI / Sistema</h3><p>Health, alertas, sync, logs</p></div><span class="mod-arr">→</span></a>
+      </div>
+    </div>
+
+    <!-- CENTER: Live Feed -->
+    <div class="WS-center">
+      <div class="WS-center-head">
+        <h2><span class="live-dot"></span>Atividade em tempo real</h2>
+        <div class="filters">
+          <button class="fbtn on">Tudo</button>
+          <button class="fbtn">Alertas</button>
+          <button class="fbtn">Pedidos</button>
+          <button class="fbtn">Produção</button>
+          <button class="fbtn">Sistema</button>
+        </div>
+      </div>
+      <div class="feed">
+        <div class="feed-date">Hoje — 17 Mar 2026</div>
+        <div class="fe"><div class="fe-dot err"></div><div class="fe-body"><div class="fe-t"><strong>Alerta:</strong> NF-42891 faturada sem registro de embarque</div><div class="fe-tm">09:42 · há 23 min</div><div class="fe-tags"><span class="fe-tag cr">Crítico</span><span class="fe-tag">Comercial</span></div></div></div>
+        <div class="fe"><div class="fe-dot err"></div><div class="fe-body"><div class="fe-t"><strong>Alerta:</strong> NF-42885 não debitou estoque do TWS-200</div><div class="fe-tm">08:15 · há 2h</div><div class="fe-tags"><span class="fe-tag cr">Crítico</span><span class="fe-tag">Produção</span></div></div></div>
+        <div class="fe"><div class="fe-dot info"></div><div class="fe-body"><div class="fe-t"><strong>PO-2024-0391</strong> mudou para INVOICED</div><div class="fe-tm">08:02 · há 2h</div><div class="fe-tags"><span class="fe-tag">Comercial</span></div></div></div>
+        <div class="fe"><div class="fe-dot ok"></div><div class="fe-body"><div class="fe-t"><strong>Sync concluído</strong> — 847 registros em 4.2s · 0 erros</div><div class="fe-tm">08:00 · há 2h</div><div class="fe-tags"><span class="fe-tag">Sistema</span></div></div></div>
+        <div class="fe"><div class="fe-dot warn"></div><div class="fe-body"><div class="fe-t"><strong>Drummer:</strong> qty divergente Soundbar SB-400 (4.800 ≠ 5.200)</div><div class="fe-tm">07:30 · há 3h</div><div class="fe-tags"><span class="fe-tag wr">Aviso</span><span class="fe-tag">Produção</span></div></div></div>
+        <div class="fe"><div class="fe-dot ok"></div><div class="fe-body"><div class="fe-t"><strong>Pagamento confirmado</strong> PO-2024-0352 · Wire transfer</div><div class="fe-tm">07:12 · há 3h</div><div class="fe-tags"><span class="fe-tag">Financeiro</span></div></div></div>
+        <div class="fe"><div class="fe-dot ok"></div><div class="fe-body"><div class="fe-t"><strong>Linha 1</strong> OP-4521 atingiu 72% · TWS-200 Pro</div><div class="fe-tm">06:45 · há 3h</div><div class="fe-tags"><span class="fe-tag">Produção</span></div></div></div>
+        <div class="fe"><div class="fe-dot info"></div><div class="fe-body"><div class="fe-t"><strong>PO-2024-0390</strong> mudou para SHIPPED</div><div class="fe-tm">06:30 · há 4h</div><div class="fe-tags"><span class="fe-tag">Comercial</span></div></div></div>
+        <div class="feed-date">Ontem — 16 Mar 2026</div>
+        <div class="fe"><div class="fe-dot ok"></div><div class="fe-body"><div class="fe-t"><strong>OP-4522</strong> iniciada na Linha 2 · BT-Speaker MK3</div><div class="fe-tm">17:20</div><div class="fe-tags"><span class="fe-tag">Produção</span></div></div></div>
+        <div class="fe"><div class="fe-dot info"></div><div class="fe-body"><div class="fe-t"><strong>Estrutura EST-003</strong> marcada como "Em revisão"</div><div class="fe-tm">16:40</div><div class="fe-tags"><span class="fe-tag">Engenharia</span></div></div></div>
+        <div class="fe"><div class="fe-dot ok"></div><div class="fe-body"><div class="fe-t"><strong>Inspeção</strong> lote #4480 aprovado · Driver Unit D-50</div><div class="fe-tm">15:10</div><div class="fe-tags"><span class="fe-tag">Qualidade</span></div></div></div>
+        <div class="fe"><div class="fe-dot sys"></div><div class="fe-body"><div class="fe-t"><strong>Backup automático</strong> concluído · 2.4GB · verificação OK</div><div class="fe-tm">06:00</div><div class="fe-tags"><span class="fe-tag">Sistema</span></div></div></div>
+        <div class="fe" style="opacity:.4"><div class="fe-dot sys"></div><div class="fe-body"><div class="fe-t" style="text-decoration:line-through"><strong>Divergência qty</strong> Driver D-50 — resolvido manualmente</div><div class="fe-tm">14:30</div><div class="fe-tags"><span class="fe-tag">Resolvido</span></div></div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: TIA -->
+    <div class="WS-right" id="tiaCol">
+      <!-- Collapsed state -->
+      <div class="tia-mini">
+        <button class="tia-mini-btn" onclick="expandTIA()">✦</button>
+        <span class="tia-mini-label" onclick="expandTIA()">TIA</span>
+      </div>
+      <!-- Full state -->
+      <div class="tia-full">
+        <div class="tia-head">
+          <div class="tia-av">✦</div>
+          <div class="tia-nfo"><h3>TIA</h3><div class="st">Online</div></div>
+          <button class="tia-collapse" onclick="collapseTIA()" title="Minimizar">◀</button>
+        </div>
+        <div class="tia-msgs" id="tMsgs">
+          <div class="tm bot">Olá! Sou a <strong>TIA</strong>, sua assistente inteligente. Posso consultar dados de qualquer módulo, gerar relatórios e responder perguntas. O que precisa?</div>
+        </div>
+        <div class="tia-hint">Pressione <strong>T</strong> para focar · <strong>Enter</strong> para enviar</div>
+        <div class="tia-inp">
+          <div class="tia-inp-row">
+            <textarea class="tia-f" id="tF" rows="1" placeholder="Pergunte algo à TIA..."></textarea>
+            <button class="tia-s" onclick="tSend()">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="sbar">
+    <div class="sbar-item"><span class="sd ok"></span>SQL Server</div>
+    <div class="sbar-item"><span class="sd ok"></span>Protheus</div>
+    <div class="sbar-item"><span class="sd ok"></span>Drummer</div>
+    <div class="sbar-item"><span class="sd ok"></span>API</div>
+    <div class="sbar-item"><span class="sd ok"></span>Sync: há 12 min</div>
+    <span class="sbar-r">TOHM Analytics v7</span>
+  </div>
+</div>
+
+<script>
+function doLogin(e){e&&e.preventDefault();document.getElementById('LO').classList.add('out');setTimeout(()=>{document.getElementById('LO').style.display='none';document.getElementById('APP').classList.add('on')},600)}
+function th(){const b=document.body,c=b.getAttribute('data-theme')||'dark',n=c==='dark'?'light':'dark';b.setAttribute('data-theme',n);localStorage.setItem('ta7',n)}
+(function(){const s=localStorage.getItem('ta7');if(s){document.body.setAttribute('data-theme',s)}})();
+function uc(){const n=new Date(),t=n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),d=n.toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'});const e=document.getElementById('clock');if(e)e.textContent=d+' · '+t}uc();setInterval(uc,30000);
+(function(){const h=new Date().getHours(),l=document.getElementById('greetLabel');if(l){if(h<12)l.textContent='Bom dia';else if(h<18)l.textContent='Boa tarde';else l.textContent='Boa noite'}})();
+
+// TIA
+function collapseTIA(){document.getElementById('tiaCol').classList.add('collapsed')}
+function expandTIA(){document.getElementById('tiaCol').classList.remove('collapsed')}
+function tSend(){const f=document.getElementById('tF'),t=f.value.trim();if(!t)return;const m=document.getElementById('tMsgs');const u=document.createElement('div');u.className='tm user';u.textContent=t;m.appendChild(u);f.value='';m.scrollTop=m.scrollHeight;setTimeout(()=>{const b=document.createElement('div');b.className='tm bot';b.innerHTML='Demonstração. No sistema real, eu consultaria o banco via <strong>MCP Server</strong> e traria dados em tempo real.';m.appendChild(b);m.scrollTop=m.scrollHeight},700)}
+document.getElementById('tF').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();tSend()}});
+document.addEventListener('keydown',e=>{if(e.key==='t'&&!e.target.closest('input,textarea')){expandTIA();setTimeout(()=>document.getElementById('tF').focus(),100)}if(e.key==='Escape')collapseTIA()});
+// Filter buttons
+document.querySelectorAll('.fbtn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on')}));
+</script>
+</body>
+</html>

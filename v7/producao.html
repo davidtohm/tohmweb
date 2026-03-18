@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Produção — TOHM Analytics</title>
+<script>(function(){var s=localStorage.getItem('ta7');if(s)document.addEventListener('DOMContentLoaded',function(){document.body.setAttribute('data-theme',s)})})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0C0E14;--bg2:#13151E;--bg3:#191C28;--bg4:#1F2233;--bg5:#262A3A;--brd:rgba(255,255,255,.04);--brd2:rgba(255,255,255,.07);--brd3:rgba(255,255,255,.12);--t1:#EDEAE4;--t2:#8B90A0;--t3:#4D5264;--t4:#363A4A;--accent:#E8930C;--accent2:#F5A623;--a-soft:rgba(232,147,12,.06);--a-med:rgba(232,147,12,.14);--a-str:rgba(232,147,12,.24);--ok:#34D399;--warn:#FBBF24;--err:#F87171;--info:#60A5FA;--font:'Instrument Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--r1:8px;--r2:12px;--r3:16px;--ease:cubic-bezier(.22,1,.36,1);--ease-apple:cubic-bezier(.4,0,.2,1);--t-fast:.15s var(--ease-apple);--t-med:.25s var(--ease-apple)}
+[data-theme="light"]{--bg:#F4F2ED;--bg2:#FFFFFF;--bg3:#EDE9E2;--bg4:#E5E1D9;--bg5:#DBD7CE;--brd:rgba(0,0,0,.04);--brd2:rgba(0,0,0,.07);--brd3:rgba(0,0,0,.12);--t1:#1A1814;--t2:#6B665C;--t3:#A09A8E;--t4:#C5C0B6;--accent:#C47A0A;--accent2:#B06C00;--a-soft:rgba(196,122,10,.05);--a-med:rgba(196,122,10,.10);--a-str:rgba(196,122,10,.18);--ok:#16874A;--err:#C93B3B;--info:#2B6FC2}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--brd3);border-radius:2px}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 1px 1px,var(--brd) 1px,transparent 0);background-size:40px 40px;opacity:.35;pointer-events:none;z-index:0}
+.tb{height:44px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid var(--brd);backdrop-filter:blur(20px);background:rgba(12,14,20,.6);flex-shrink:0;z-index:10;position:relative}
+[data-theme="light"] .tb{background:rgba(244,242,237,.65)}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-back{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--r1);border:1px solid var(--brd2);background:transparent;color:var(--t2);font-family:var(--font);font-size:.72rem;font-weight:500;cursor:pointer;text-decoration:none;transition:all var(--t-med)}
+.tb-back:hover{background:var(--bg4);color:var(--t1);border-color:var(--brd3)}
+.tb-div{width:1px;height:14px;background:var(--brd2)}
+.tb-img{height:13px;opacity:.7}
+[data-theme="dark"] .tb-img{filter:brightness(0) invert(1)}
+.tb-app{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.tb-page{font-size:.82rem;font-weight:600;margin-left:4px}
+.tb-r{margin-left:auto;display:flex;align-items:center;gap:12px}
+.tb-clk{font-family:var(--mono);font-size:.68rem;color:var(--t3)}
+.tb-th{width:28px;height:28px;border-radius:50%;border:1px solid var(--brd2);background:transparent;color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--t-med);position:relative;overflow:hidden}
+.tb-th:hover{border-color:var(--accent);color:var(--accent);background:var(--a-soft);transform:scale(1.08)}
+.tb-th svg{position:absolute;transition:transform .4s var(--ease),opacity .25s ease}
+.tb-th .ic-sun{transform:rotate(0) scale(1);opacity:1}.tb-th .ic-moon{transform:rotate(-90deg) scale(.5);opacity:0}
+[data-theme="light"] .tb-th .ic-sun{transform:rotate(90deg) scale(.5);opacity:0}[data-theme="light"] .tb-th .ic-moon{transform:rotate(0) scale(1);opacity:1}
+.WS{flex:1;display:flex;overflow:hidden;position:relative;z-index:1}
+.main-content{flex:1;overflow-y:auto;padding:20px 24px}
+.sec-h{font-family:var(--mono);font-size:.52rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t4);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-h::after{content:'';flex:1;height:1px;background:var(--brd2)}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--brd2);border-radius:var(--r2);overflow:hidden;margin-bottom:18px}
+.kpi{background:var(--bg2);padding:14px 16px}
+.kpi-l{font-family:var(--mono);font-size:.52rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t4);margin-bottom:6px}
+.kpi-v{font-family:var(--mono);font-size:1.2rem;font-weight:700;line-height:1}
+.kpi-c{font-size:.62rem;font-weight:500;margin-top:3px}.kpi-c.u{color:var(--ok)}.kpi-c.d{color:var(--err)}
+.tbl{background:var(--bg2);border:1px solid var(--brd);border-radius:var(--r2);overflow:hidden;margin-bottom:18px}
+.tbl-r{display:grid;align-items:center;padding:9px 14px;gap:8px;border-bottom:1px solid var(--brd);transition:all var(--t-fast)}
+.tbl-r:last-child{border:0}.tbl-r:hover{background:var(--bg3);padding-left:16px}
+.tbl-r.hd{background:var(--bg3);padding:7px 14px}
+.tbl-r.hd span{font-family:var(--mono);font-size:.5rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t4)}
+.tbl-cell{font-size:.72rem;color:var(--t2)}.tbl-cell.mono{font-family:var(--mono)}.tbl-cell.b{font-weight:600;color:var(--t1)}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:.56rem;font-weight:600;padding:2px 8px;border-radius:999px}
+.pill .d{width:4px;height:4px;border-radius:50%}
+.pill.ok{background:rgba(52,211,153,.1);color:var(--ok)}.pill.ok .d{background:var(--ok)}
+.pill.info{background:rgba(96,165,250,.1);color:var(--info)}.pill.info .d{background:var(--info)}
+.pill.warn{background:rgba(251,191,36,.1);color:var(--warn)}.pill.warn .d{background:var(--warn)}
+.pill.err{background:rgba(248,113,113,.1);color:var(--err)}.pill.err .d{background:var(--err)}
+.pill.neu{background:var(--bg4);color:var(--t3)}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.card{background:var(--bg2);border:1px solid var(--brd);border-radius:var(--r2);padding:16px;transition:all var(--t-med);cursor:default}
+.card:hover{border-color:var(--brd3);background:var(--bg3)}
+.card-v{font-family:var(--mono);font-size:1.4rem;font-weight:700;line-height:1;margin-bottom:4px}
+.card-l{font-size:.62rem;color:var(--t3)}.card-sub{font-size:.56rem;color:var(--t4);margin-top:2px}
+.bar-wrap{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:8px}
+.bar-fill{height:100%;border-radius:3px;transition:width 1s var(--ease)}
+.sbar{height:26px;border-top:1px solid var(--brd);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0}
+.sbar-i{display:flex;align-items:center;gap:4px;font-size:.55rem;color:var(--t3)}.sbar-i .sd{width:4px;height:4px;border-radius:50%;background:var(--ok)}
+.sbar-r{margin-left:auto;font-family:var(--mono);font-size:.52rem;color:var(--t4)}
+@media(max-width:700px){.card-grid{grid-template-columns:1fr 1fr}.kpi-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body data-theme="dark">
+<header class="tb">
+  <div class="tb-l">
+    <a href="index.html" class="tb-back">← Portal</a>
+    <div class="tb-div"></div>
+    <img class="tb-img" src="https://i.ibb.co/BKH5WP8C/TOHM-Logo-Lpreto-Sfundo.png" alt="T">
+    <span class="tb-app">TOHM</span>
+    <span class="tb-page">Produção</span>
+  </div>
+  <div class="tb-r">
+    <span class="tb-clk" id="clock"></span>
+    <button class="tb-th" onclick="th()" title="Tema"><svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="ic-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+  </div>
+</header>
+<div class="WS">
+<div class="main-content">
+
+<div class="sec-h">Indicadores de Produção</div>
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-l">OEE Geral</div><div class="kpi-v" style="color:var(--ok)">88%</div><div class="kpi-c u">Meta: 85%</div></div>
+  <div class="kpi"><div class="kpi-l">Disponibilidade</div><div class="kpi-v" style="color:var(--info)">80%</div><div class="kpi-c">Paradas: 2h10</div></div>
+  <div class="kpi"><div class="kpi-l">Qualidade</div><div class="kpi-v" style="color:var(--accent)">95%</div><div class="kpi-c">Rejeitos: 312</div></div>
+  <div class="kpi"><div class="kpi-l">Performance</div><div class="kpi-v">92%</div><div class="kpi-c u">▲ 4%</div></div>
+</div>
+
+<div class="sec-h">Linhas de Produção</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
+  <div class="card" style="display:flex;align-items:center;gap:14px;padding:12px 16px"><span style="font-size:.78rem;font-weight:600;min-width:55px">Linha 1</span><div class="bar-wrap" style="flex:1"><div class="bar-fill" style="width:72%;background:linear-gradient(90deg,var(--info),#80BBEE)"></div></div><span style="font-family:var(--mono);font-size:.72rem;font-weight:600;min-width:35px;text-align:right">72%</span><span style="font-family:var(--mono);font-size:.65rem;color:var(--t3);min-width:60px">OP-4521</span><span style="font-size:.65rem;color:var(--t3)">ETA 16:30</span></div>
+  <div class="card" style="display:flex;align-items:center;gap:14px;padding:12px 16px"><span style="font-size:.78rem;font-weight:600;min-width:55px">Linha 2</span><div class="bar-wrap" style="flex:1"><div class="bar-fill" style="width:45%;background:linear-gradient(90deg,var(--accent),#F5B868)"></div></div><span style="font-family:var(--mono);font-size:.72rem;font-weight:600;min-width:35px;text-align:right">45%</span><span style="font-family:var(--mono);font-size:.65rem;color:var(--t3);min-width:60px">OP-4522</span><span style="font-size:.65rem;color:var(--t3)">ETA amanhã</span></div>
+  <div class="card" style="display:flex;align-items:center;gap:14px;padding:12px 16px"><span style="font-size:.78rem;font-weight:600;min-width:55px">Linha 3</span><div class="bar-wrap" style="flex:1"><div class="bar-fill" style="width:12%;background:linear-gradient(90deg,var(--ok),#6EC9A0)"></div></div><span style="font-family:var(--mono);font-size:.72rem;font-weight:600;min-width:35px;text-align:right">12%</span><span style="font-family:var(--mono);font-size:.65rem;color:var(--t3);min-width:60px">OP-4523</span><span style="font-size:.65rem;color:var(--t3)">ETA 20/03</span></div>
+  <div class="card" style="display:flex;align-items:center;gap:14px;padding:12px 16px;opacity:.4"><span style="font-size:.78rem;font-weight:600;min-width:55px">Linha 4</span><div class="bar-wrap" style="flex:1"><div class="bar-fill" style="width:0%"></div></div><span style="font-family:var(--mono);font-size:.72rem;min-width:35px;text-align:right;color:var(--t4)">0%</span><span style="font-family:var(--mono);font-size:.65rem;color:var(--t4);min-width:60px">—</span><span style="font-size:.65rem;color:var(--t4)">Ociosa</span></div>
+</div>
+
+<div class="sec-h">OPs em Andamento</div>
+<div class="tbl">
+  <div class="tbl-r hd" style="grid-template-columns:.8fr 1fr .6fr .8fr .5fr .5fr .5fr .5fr"><span>OP</span><span>Produto</span><span>Linha</span><span>Progresso</span><span>Plan</span><span>Prod</span><span>Rej</span><span>Status</span></div>
+  <div class="tbl-r" style="grid-template-columns:.8fr 1fr .6fr .8fr .5fr .5fr .5fr .5fr"><span class="tbl-cell b mono">OP-4521</span><span class="tbl-cell">TWS-200 Pro</span><span class="tbl-cell">L1</span><span style="display:flex;align-items:center;gap:6px"><span class="bar-wrap" style="width:60px;height:4px"><span class="bar-fill" style="width:72%;background:var(--ok);display:block;height:100%;border-radius:2px"></span></span><span class="tbl-cell mono">72%</span></span><span class="tbl-cell mono">12K</span><span class="tbl-cell mono">8.640</span><span class="tbl-cell" style="color:var(--warn)">156</span><span><span class="pill ok"><span class="d"></span>Rodando</span></span></div>
+  <div class="tbl-r" style="grid-template-columns:.8fr 1fr .6fr .8fr .5fr .5fr .5fr .5fr"><span class="tbl-cell b mono">OP-4522</span><span class="tbl-cell">BT-Speaker MK3</span><span class="tbl-cell">L2</span><span style="display:flex;align-items:center;gap:6px"><span class="bar-wrap" style="width:60px;height:4px"><span class="bar-fill" style="width:45%;background:var(--info);display:block;height:100%;border-radius:2px"></span></span><span class="tbl-cell mono">45%</span></span><span class="tbl-cell mono">8.5K</span><span class="tbl-cell mono">3.825</span><span class="tbl-cell">89</span><span><span class="pill ok"><span class="d"></span>Rodando</span></span></div>
+  <div class="tbl-r" style="grid-template-columns:.8fr 1fr .6fr .8fr .5fr .5fr .5fr .5fr"><span class="tbl-cell b mono">OP-4523</span><span class="tbl-cell">Soundbar SB-400</span><span class="tbl-cell">L3</span><span style="display:flex;align-items:center;gap:6px"><span class="bar-wrap" style="width:60px;height:4px"><span class="bar-fill" style="width:12%;background:var(--accent);display:block;height:100%;border-radius:2px"></span></span><span class="tbl-cell mono">12%</span></span><span class="tbl-cell mono">5.2K</span><span class="tbl-cell mono">624</span><span class="tbl-cell">67</span><span><span class="pill ok"><span class="d"></span>Rodando</span></span></div>
+  <div class="tbl-r" style="grid-template-columns:.8fr 1fr .6fr .8fr .5fr .5fr .5fr .5fr;opacity:.4"><span class="tbl-cell mono" style="color:var(--t4)">OP-4524</span><span class="tbl-cell" style="color:var(--t4)">Subwoofer SW-12</span><span class="tbl-cell" style="color:var(--t4)">—</span><span class="tbl-cell mono" style="color:var(--t4)">0%</span><span class="tbl-cell mono" style="color:var(--t4)">3K</span><span class="tbl-cell mono" style="color:var(--t4)">0</span><span class="tbl-cell" style="color:var(--t4)">0</span><span><span class="pill neu">Na fila</span></span></div>
+</div>
+
+</div>
+</div>
+<div class="sbar">
+  <div class="sbar-i"><span class="sd"></span>Online</div>
+  <div class="sbar-i"><span class="sd"></span>Sync: 12min</div>
+  <span class="sbar-r">Produção · TOHM Analytics v7</span>
+</div>
+<script>
+function th(){const b=document.body,c=b.getAttribute('data-theme')||'dark',n=c==='dark'?'light':'dark';b.setAttribute('data-theme',n);localStorage.setItem('ta7',n)}
+(function(){const s=localStorage.getItem('ta7');if(s)document.body.setAttribute('data-theme',s)})();
+function uc(){const n=new Date(),t=n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),d=n.toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'});const e=document.getElementById('clock');if(e)e.textContent=d+' · '+t}uc();setInterval(uc,30000);
+</script>
+</body>
+</html>
